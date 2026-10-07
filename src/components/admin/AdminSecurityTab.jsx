@@ -124,7 +124,7 @@ function AdminSecurityTab() {
               style={{ flex: 1, padding: '1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '1rem' }}
               required
             />
-            <button type="submit" className="cta-button" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0 2rem' }}>
+            <button type="submit" className="cta-button" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '1rem 2rem', justifyContent: 'center' }}>
               <UserPlus size={20} />
               <span>Autorizar Correo</span>
             </button>
