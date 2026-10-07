@@ -1,27 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { getMenuItems } from '../services/db';
+import { getMenuItems, getSettings } from '../services/db';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Plus, Minus, ShoppingCart, Menu as MenuIcon, X } from 'lucide-react';
+import { Plus, Minus, ShoppingCart, Menu as MenuIcon, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AlertModal from '../components/AlertModal';
 import LoadingScreen from '../components/LoadingScreen';
+import ProductCustomizerModal from '../components/ProductCustomizerModal';
+import { normalizeText } from '../utils/stringUtils';
+import { useSessionState } from '../hooks/useSessionState';
+import { useBranding } from '../hooks/useBranding';
 
 
 function Menu() {
+  const branding = useBranding();
   const [menuItems, setMenuItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('Todos');
+  const [activeCategory, setActiveCategory] = useSessionState('antana_activeCategory', 'Todos');
+  const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useSessionState('antana_selectedProduct', null);
+  const [modalInitialStep, setModalInitialStep] = useSessionState('antana_modalInitialStep', 'info');
   const [outOfStockItem, setOutOfStockItem] = useState(null);
-  const { cartItems, addToCart, updateQuantity } = useCart();
+  const { cartItems, addToCart, updateQuantity, setIsCartOpen, cartCount } = useCart();
+  const [flyingStar, setFlyingStar] = useState(false);
+  const [bumpCart, setBumpCart] = useState(false);
 
   const handleProductClick = (item, e) => {
     if (e) e.stopPropagation();
     if (item.isOutofStock) {
       setOutOfStockItem(item);
     } else {
+      setModalInitialStep('info');
       setSelectedProduct(item);
     }
   };
@@ -31,21 +41,27 @@ function Menu() {
     if (item.isOutofStock) {
       setOutOfStockItem(item);
     } else {
-      addToCart(item);
+      setModalInitialStep('customize');
+      setSelectedProduct(item);
     }
   };
+
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     const fetchMenu = async () => {
       setIsLoading(true);
       const items = await getMenuItems();
+      const stngs = await getSettings();
       setMenuItems(items);
+      setSettings(stngs);
       setIsLoading(false);
     };
     fetchMenu();
   }, []);
 
-  const categories = ['Todos', 'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Adicionales'];
+  const allCats = settings?.customCategories || [];
+  const categories = ['Todos', ...allCats.filter(c => !c.startsWith('Extras - '))];
 
   const displayedCategories = activeCategory === 'Todos' 
     ? categories.filter(c => c !== 'Todos') 
@@ -62,6 +78,22 @@ function Menu() {
           <div className="section-header reveal active" style={{ marginBottom: '1rem', marginTop: '0' }}>
             <span className="section-subtitle">Nuestra Carta</span>
             <h2 className="section-title">El Menú Antana</h2>
+          </div>
+
+          <div className="search-input-wrapper">
+            <Search className="search-icon" size={20} />
+            <input 
+              type="text" 
+              className="search-input" 
+              placeholder="¿Qué se te antoja hoy?" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button className="search-clear-btn" onClick={() => setSearchTerm('')}>
+                <X size={16} />
+              </button>
+            )}
           </div>
           
           <div className="sidebar-layout">
@@ -98,9 +130,18 @@ function Menu() {
           
             {/* Main Content */}
             <div>
+              {menuItems.filter(item => normalizeText(item.name).includes(normalizeText(searchTerm))).length === 0 && (
+                <div className="empty-search-state glass">
+                  <p>No encontramos productos que coincidan con "{searchTerm}"</p>
+                  <button className="cta-button" onClick={() => setSearchTerm('')}>Ver todo el menú</button>
+                </div>
+              )}
               <AnimatePresence mode="popLayout">
             {displayedCategories.map(category => {
-              const itemsInCategory = menuItems.filter(item => item.category === category);
+              const itemsInCategory = menuItems.filter(item => 
+                item.category === category &&
+                normalizeText(item.name).includes(normalizeText(searchTerm))
+              );
               if (itemsInCategory.length === 0) return null;
               
               return (
@@ -117,9 +158,6 @@ function Menu() {
                   </h3>
                   <div className="burger-grid">
                     {itemsInCategory.map(item => {
-                      const cartItem = cartItems.find(i => i.id === item.id);
-                      const quantity = cartItem ? cartItem.quantity : 0;
-
                       return (
                         <div key={item.id} className="burger-card glass" style={{ opacity: item.isOutofStock ? 0.6 : 1, position: 'relative' }}>
                           {item.isOutofStock && (
@@ -144,20 +182,12 @@ function Menu() {
                           
                           <div className="burger-card-footer">
                             <span className="burger-price-bottom">${item.price.toLocaleString('es-CO')}</span>
-                            {quantity > 0 ? (
-                              <div className="burger-quantity-controls">
-                                <button onClick={() => updateQuantity(item.id, -1)} style={{ background: 'var(--accent-pink)', border: 'none', color: 'white', borderRadius: '8px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Minus size={16} /></button>
-                                <span style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '0.9rem', width: '20px' }}>{quantity}</span>
-                                <button onClick={() => updateQuantity(item.id, 1)} style={{ background: 'var(--accent-cyan)', border: 'none', color: 'black', borderRadius: '8px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Plus size={16} /></button>
-                              </div>
-                            ) : (
-                              <button 
-                                onClick={(e) => handleAddToCartClick(item, e)}
-                                className="burger-add-btn-full"
-                              >
-                                <ShoppingCart size={16} /> Agregar
-                              </button>
-                            )}
+                            <button 
+                              onClick={(e) => handleAddToCartClick(item, e)}
+                              className="burger-add-btn-full"
+                            >
+                              <ShoppingCart size={16} /> Agregar
+                            </button>
                           </div>
                         </div>
                       );
@@ -181,62 +211,104 @@ function Menu() {
       />
 
       {/* Product Image Modal */}
+      <ProductCustomizerModal
+        isOpen={!!selectedProduct}
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={(product, qty, extras, comment) => {
+          addToCart(product, qty, extras, comment);
+          setFlyingStar(true);
+        }}
+        allMenuItems={menuItems}
+        initialStep={modalInitialStep}
+      />
+
+      {/* Floating Cart Button (Mobile) */}
       <AnimatePresence>
-        {selectedProduct && (
-          <motion.div 
-            className="product-modal-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedProduct(null)}
+        {cartItems.length > 0 && (
+          <motion.button
+            onClick={() => setIsCartOpen(true)}
+            initial={{ y: 100, opacity: 0, x: '-50%' }}
+            animate={{ 
+              y: 0, 
+              opacity: 1, 
+              x: '-50%',
+              scale: bumpCart ? 1.1 : 1
+            }}
+            transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+            exit={{ y: 100, opacity: 0, x: '-50%' }}
+            style={{
+              position: 'fixed',
+              bottom: '20px',
+              left: '50%',
+              width: '90%',
+              maxWidth: '400px',
+              backgroundColor: 'var(--accent-yellow)',
+              color: 'black',
+              border: '2px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '30px',
+              padding: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.8rem',
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+              zIndex: 990,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+              cursor: 'pointer'
+            }}
           >
-            <motion.div 
-              className="product-modal-card"
-              initial={{ scale: 0.9, y: 50, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.9, y: 50, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside card
-            >
-              <button 
-                className="product-modal-close-btn" 
-                onClick={() => setSelectedProduct(null)}
-              >
-                <X size={20} />
-              </button>
+            <ShoppingCart size={24} /> Mi pedido ({cartCount})
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-              <div className="product-modal-img-container">
-                <img src={selectedProduct.imageUrl} alt={selectedProduct.name} />
-              </div>
-
-              <div className="product-modal-details">
-                <h2 className="product-modal-title">{selectedProduct.name}</h2>
-                <p className="product-modal-desc">{selectedProduct.description}</p>
-                
-                <div className="product-modal-footer">
-                  <span className="product-modal-price">${selectedProduct.price.toLocaleString('es-CO')}</span>
-                  
-                  {(() => {
-                    const cartItem = cartItems.find(i => i.id === selectedProduct.id);
-                    const quantity = cartItem ? cartItem.quantity : 0;
-                    
-                    return quantity > 0 ? (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', borderRadius: '20px', padding: '0.5rem' }}>
-                        <button onClick={() => updateQuantity(selectedProduct.id, -1)} style={{ background: 'var(--accent-pink)', border: 'none', color: 'white', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Minus size={16} /></button>
-                        <span style={{ fontWeight: 'bold', width: '24px', textAlign: 'center' }}>{quantity}</span>
-                        <button onClick={() => updateQuantity(selectedProduct.id, 1)} style={{ background: 'var(--accent-cyan)', border: 'none', color: 'black', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><Plus size={16} /></button>
-                      </div>
-                    ) : (
-                      <button 
-                        onClick={() => addToCart(selectedProduct)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--accent-yellow)', color: 'black', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer', fontSize: '1.1rem' }}
-                      >
-                        <ShoppingCart size={20} /> Agregar
-                      </button>
-                    );
-                  })()}
-                </div>
-              </div>
-            </motion.div>
+      {/* Flying Star Animation - Phase 2 */}
+      <AnimatePresence>
+        {flyingStar && (
+          <motion.div
+            initial={{ top: '50%', left: '50%', scale: 1, opacity: 1, x: '-50%', y: '-50%' }}
+            animate={{ 
+              top: ['50%', '30%', '90%'], 
+              left: ['50%', '75%', '50%'], 
+              scale: [1.0, 1.5, 0.5], 
+              opacity: [1, 1, 1],
+              rotate: [0, 45, 0] 
+            }}
+            transition={{ 
+              duration: 1.8, 
+              delay: 0,
+              times: [0, 0.4, 1],
+              ease: "easeInOut" 
+            }}
+            onAnimationComplete={() => {
+              setFlyingStar(false);
+              setBumpCart(true);
+              setTimeout(() => setBumpCart(false), 300);
+            }}
+            style={{
+              position: 'fixed',
+              width: '80px',
+              height: '80px',
+              zIndex: 9999,
+              pointerEvents: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              willChange: 'transform, top, left, opacity'
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '10%', left: '10%', right: '10%', bottom: '10%',
+              borderRadius: '50%',
+              background: 'var(--accent-yellow)',
+              filter: 'blur(30px)',
+              opacity: 0.8,
+              willChange: 'transform, opacity'
+            }} />
+            <img src="/anim_planet.png" alt="Planeta Antana" style={{ width: '100%', height: '100%', objectFit: 'contain', zIndex: 1, position: 'relative', willChange: 'transform', filter: 'drop-shadow(0 0 2px var(--accent-yellow)) brightness(1.5) contrast(1.2)' }} />
           </motion.div>
         )}
       </AnimatePresence>

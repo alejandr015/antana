@@ -1,108 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
-import { getNeighborhoods, getSettings } from '../services/db';
 import AlertModal from './AlertModal';
+import CheckoutModal from './CheckoutModal';
+import ProductCustomizerModal from './ProductCustomizerModal';
+import { Trash2, Edit2 } from 'lucide-react';
+import { getMenuItems, getSettings } from '../services/db';
+import { useHardwareBack } from '../hooks/useHardwareBack';
+import { useSessionState } from '../hooks/useSessionState';
 
 function CartSidebar() {
-  const { isCartOpen, setIsCartOpen, cartItems, updateQuantity, updateComment, removeFromCart, cartTotal, subTotal, deliveryFee, selectedNeighborhood, setSelectedNeighborhood } = useCart();
-  const [address, setAddress] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Efectivo");
-  const [neighborhoods, setNeighborhoods] = useState([]);
+  const { isCartOpen, setIsCartOpen, cartItems, updateQuantity, removeFromCart, updateCartItemFull, subTotal } = useCart();
   const [alertData, setAlertData] = useState({ isOpen: false, title: '', message: '', onConfirm: null, confirmText: '', cancelText: '' });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+  const [confirmedLargeOrders, setConfirmedLargeOrders] = useState({});
+  const [categoryLimits, setCategoryLimits] = useState({});
+
+  // Cierra el carrito si presionan atrás en el celular
+  useHardwareBack(isCartOpen, () => setIsCartOpen(false), 'cartSidebar');
+
+  useEffect(() => {
+    getMenuItems().then(data => setMenuItems(data));
+    getSettings().then(s => {
+      if (s && s.categoryLimits) setCategoryLimits(s.categoryLimits);
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    // Verificar en el montaje
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    if (isCartOpen) {
-      const loadNb = async () => {
-        setNeighborhoods(await getNeighborhoods());
-      };
-      loadNb();
-    }
-  }, [isCartOpen]);
-
-  const executeWhatsAppOrder = (settings) => {
-    const orderText = cartItems.map(item =>
-      `• ${item.name} x${item.quantity} - $${(item.price * item.quantity).toLocaleString('es-CO')}` +
-      (item.comment ? ` (Nota: ${item.comment})` : "")
-    ).join('\n');
-
-    const isDelayActive = settings.preOrderAlert && settings.preOrderAlert.active && settings.preOrderAlert.allowContinue;
-    const tiempoEsperaMsg = isDelayActive
-      ? (settings.delayAlert?.message || '')
-      : (settings.normalAlert?.message || '');
-
-    let finalMessage = settings.whatsappTemplate
-      .replace('{pedido}', orderText)
-      .replace('{nombre}', customerName)
-      .replace('{celular}', customerPhone)
-      .replace('{barrio}', selectedNeighborhood.name)
-      .replace('{direccion}', address)
-      .replace('{domicilio}', `$${deliveryFee.toLocaleString('es-CO')}`)
-      .replace('{metodo_pago}', paymentMethod)
-      .replace('{total}', `$${cartTotal.toLocaleString('es-CO')}`)
-      .replace('{tiempo_espera}', tiempoEsperaMsg ? `*Tiempo estimado:* ${tiempoEsperaMsg}` : '');
-
-    const url = `https://wa.me/+573204449987?text=${encodeURIComponent(finalMessage)}`;
-    window.open(url, '_blank');
-  };
-
-  const sendToWhatsApp = async () => {
-    if (cartItems.length === 0) return;
-    if (!customerName.trim()) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, ingresa el nombre de quien recibe el pedido.", onConfirm: null });
-      return;
-    }
-    if (!customerPhone.trim()) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, ingresa tu número de celular.", onConfirm: null });
-      return;
-    }
-    if (!selectedNeighborhood) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, selecciona tu barrio de la lista para calcular el costo del domicilio antes de hacer el pedido.", onConfirm: null });
-      return;
-    }
-    if (!address.trim()) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, escribe tu dirección exacta para poder entregar tu pedido sin inconvenientes.", onConfirm: null });
-      return;
-    }
-
-    const settings = await getSettings();
-
-    if (settings.preOrderAlert && settings.preOrderAlert.active) {
-      const isAllowed = settings.preOrderAlert.allowContinue;
-      const profile = isAllowed
-        ? (settings.delayAlert || settings.preOrderAlert)
-        : (settings.closedAlert || settings.preOrderAlert);
-
-      setAlertData({
-        isOpen: true,
-        title: profile.title || 'Información',
-        message: profile.message,
-        onConfirm: isAllowed ? () => executeWhatsAppOrder(settings) : null,
-        confirmText: 'Aceptar y Continuar',
-        cancelText: isAllowed ? 'Volver' : 'Entendido'
-      });
-    } else {
-      setAlertData({
-        isOpen: true,
-        title: settings.normalAlert?.title || 'Confirmación de Pedido',
-        message: settings.normalAlert?.message || 'Tu pedido tardará de 25 a 35 minutos aproximadamente.',
-        onConfirm: () => executeWhatsAppOrder(settings),
-        confirmText: 'Aceptar',
-        cancelText: 'Volver'
-      });
-    }
-  };
 
   const mobileStyles = {
     position: 'fixed',
@@ -191,8 +123,8 @@ function CartSidebar() {
                   <p style={{ opacity: 0.6, textAlign: 'center', marginTop: '2rem' }}>Tu carrito está vacío 🍔</p>
                 ) : (
                   cartItems.map(item => (
-                    <div key={item.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem' }}>
-                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div key={item.cartItemId} style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1rem' }}>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                         {/* IMAGE */}
                         <img
                           src={item.imageUrl}
@@ -211,202 +143,109 @@ function CartSidebar() {
                             {item.name}
                           </p>
 
-                          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: '0.2rem 0' }}>
-                            ${item.price.toLocaleString('es-CO')}
-                          </p>
+                          {/* Mostrar Extras */}
+                          {item.extras && item.extras.length > 0 && (
+                            <div style={{ marginTop: '4px', marginBottom: '4px' }}>
+                              {item.extras.map(e => {
+                                const q = e.quantity || 1;
+                                return (
+                                  <div key={e.id} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                                    + {q > 1 ? `${q}x ` : ''}{e.name} (${(e.price * q).toLocaleString('es-CO')})
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
 
-                          <button
-                            onClick={() => {
-                              setAlertData({
-                                isOpen: true,
-                                title: 'Eliminar Producto',
-                                message: `¿Estás seguro que deseas eliminar "${item.name}" de tu pedido?`,
-                                onConfirm: () => {
-                                  removeFromCart(item.id);
-                                  setAlertData(prev => ({ ...prev, isOpen: false }));
-                                },
-                                confirmText: 'Eliminar',
-                                cancelText: 'Atrás'
-                              });
-                            }}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              color: 'var(--accent-pink)',
-                              fontSize: '0.8rem',
-                              padding: 0,
-                              cursor: 'pointer',
-                              marginTop: '2px'
-                            }}
-                          >
-                            Eliminar
-                          </button>
+                          {/* Mostrar Nota */}
+                          {item.comment && (
+                            <div style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', fontStyle: 'italic', marginTop: '4px' }}>
+                              Nota: {item.comment}
+                            </div>
+                          )}
+
+                          <p style={{ color: 'var(--accent-yellow)', fontSize: '0.9rem', margin: '0.4rem 0', fontWeight: 'bold' }}>
+                            ${item.price.toLocaleString('es-CO')} c/u
+                          </p>
                         </div>
 
                         {/* CONTROLES */}
-                        <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', padding: '4px 8px' }}>
-                          <button
-                            onClick={() => updateQuantity(item.id, -1)}
-                            style={{ background: 'transparent', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem' }}
-                          >−</button>
-                          <span style={{ fontSize: '0.9rem', width: '20px', textAlign: 'center', fontWeight: 'bold' }}>{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.id, 1)}
-                            style={{ background: 'transparent', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem' }}
-                          >+</button>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.8rem' }}>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            <button
+                              onClick={() => {
+                                console.log("Clic en editar. Item:", item);
+                                setEditingItem(item);
+                              }}
+                              style={{ background: 'transparent', border: 'none', color: 'var(--accent-yellow)', cursor: 'pointer', padding: '6px' }}
+                              title="Editar producto"
+                            >
+                              <Edit2 size={20} />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setAlertData({
+                                  isOpen: true,
+                                  title: 'Eliminar Producto',
+                                  message: `¿Estás seguro que deseas eliminar este producto de tu pedido?`,
+                                  onConfirm: () => {
+                                    removeFromCart(item.cartItemId);
+                                    setAlertData(prev => ({ ...prev, isOpen: false }));
+                                  },
+                                  confirmText: 'Eliminar',
+                                  cancelText: 'Atrás'
+                                });
+                              }}
+                              style={{ background: 'transparent', border: 'none', color: 'var(--accent-pink)', cursor: 'pointer', padding: '6px' }}
+                              title="Eliminar producto"
+                            >
+                              <Trash2 size={20} />
+                            </button>
+                          </div>
+
+                          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', borderRadius: '30px', padding: '2px 6px' }}>
+                            <button
+                              onClick={() => {
+                                updateQuantity(item.cartItemId, -1);
+                                const catLimit = categoryLimits[item.category];
+                                const maxLimit = catLimit ? catLimit.limit : 10;
+                                if (item.quantity - 1 <= maxLimit) {
+                                  setConfirmedLargeOrders(prev => ({ ...prev, [item.cartItemId]: false }));
+                                }
+                              }}
+                              style={{ background: 'transparent', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem' }}
+                            >−</button>
+                            <span style={{ fontSize: '0.9rem', width: '20px', textAlign: 'center', fontWeight: 'bold' }}>{item.quantity}</span>
+                            <button
+                              onClick={() => {
+                                const catLimit = categoryLimits[item.category];
+                                const isActive = catLimit ? catLimit.active : true;
+                                const maxLimit = catLimit ? catLimit.limit : 10;
+
+                                if (isActive && item.quantity >= maxLimit && !confirmedLargeOrders[item.cartItemId]) {
+                                  setAlertData({
+                                    isOpen: true,
+                                    title: 'Aviso de Cantidad',
+                                    message: `¿Estás seguro que deseas ordenar más de ${maxLimit} unidades de ${item.name}?`,
+                                    onConfirm: () => {
+                                      setConfirmedLargeOrders(prev => ({ ...prev, [item.cartItemId]: true }));
+                                      updateQuantity(item.cartItemId, 1);
+                                      setAlertData(prev => ({ ...prev, isOpen: false }));
+                                    },
+                                    confirmText: 'Aceptar',
+                                    cancelText: 'Cancelar'
+                                  });
+                                  return;
+                                }
+                                updateQuantity(item.cartItemId, 1);
+                              }}
+                              style={{ background: 'transparent', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem' }}
+                            >+</button>
+                          </div>
                         </div>
                       </div>
-
-                      {/* NOTAS */}
-                      <textarea
-                        placeholder="Notas (sin cebolla, extra salsa...)"
-                        value={item.comment}
-                        onChange={(e) => updateComment(item.id, e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 12px',
-                          borderRadius: '8px',
-                          background: 'rgba(255,255,255,0.03)',
-                          border: '1px solid rgba(255,255,255,0.08)',
-                          color: 'white',
-                          fontSize: '0.8rem',
-                          resize: 'none',
-                          boxSizing: 'border-box',
-                          height: '40px'
-                        }}
-                      />
                     </div>
                   ))
-                )}
-
-                {/* CHECKOUT INFO (DENTRO DEL SCROLL PARA MOVILES) */}
-                {cartItems.length > 0 && (
-                  <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                    {/* NOMBRE Y CELULAR */}
-                    <div>
-                      <p style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                        Nombre de quien recibe <span style={{ color: 'var(--accent-pink)' }}>*</span>
-                      </p>
-                      <input
-                        type="text"
-                        placeholder="Tu nombre completo"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          borderRadius: '8px',
-                          background: 'rgba(0,0,0,0.3)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'white',
-                          fontSize: '0.85rem',
-                          boxSizing: 'border-box',
-                          marginBottom: '0.8rem'
-                        }}
-                      />
-
-                      <p style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                        Número de celular <span style={{ color: 'var(--accent-pink)' }}>*</span>
-                      </p>
-                      <input
-                        type="tel"
-                        placeholder="Tu número de contacto"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          borderRadius: '8px',
-                          background: 'rgba(0,0,0,0.3)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'white',
-                          fontSize: '0.85rem',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-
-                    {/* BARRIO DROPDOWN */}
-                    <div>
-                      <p style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                        Barrio de entrega <span style={{ color: 'var(--accent-pink)' }}>*</span>
-                      </p>
-                      <select
-                        value={selectedNeighborhood ? selectedNeighborhood.id : ''}
-                        onChange={(e) => {
-                          const nb = neighborhoods.find(n => n.id === e.target.value);
-                          setSelectedNeighborhood(nb || null);
-                        }}
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          borderRadius: '8px',
-                          background: 'rgba(0,0,0,0.3)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'white',
-                          fontSize: '0.85rem',
-                          boxSizing: 'border-box'
-                        }}
-                      >
-                        <option value="">-- Selecciona un barrio --</option>
-                        {neighborhoods.map(nb => (
-                          <option key={nb.id} value={nb.id}>{nb.name} (+${nb.price.toLocaleString('es-CO')})</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* DIRECCION EXACTA */}
-                    <div>
-                      <p style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                        Dirección exacta
-                      </p>
-                      <input
-                        type="text"
-                        placeholder="Ej: Cra 16 #34a-10, Gualanday"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '0.7rem',
-                          borderRadius: '8px',
-                          background: 'rgba(0,0,0,0.3)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          color: 'white',
-                          fontSize: '0.85rem',
-                          boxSizing: 'border-box'
-                        }}
-                      />
-                    </div>
-
-                    {/* MÉTODO DE PAGO */}
-                    <div style={{ marginBottom: '1rem' }}>
-                      <p style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                        Método de pago
-                      </p>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {["Efectivo", "Transferencia", "Tarjeta"].map(method => (
-                          <button
-                            key={method}
-                            onClick={() => setPaymentMethod(method)}
-                            style={{
-                              flex: 1,
-                              padding: '0.6rem',
-                              fontSize: '0.75rem',
-                              borderRadius: '8px',
-                              background: paymentMethod === method ? 'var(--accent-yellow)' : 'rgba(255,255,255,0.05)',
-                              color: paymentMethod === method ? 'black' : 'white',
-                              border: '1px solid rgba(255,255,255,0.1)',
-                              transition: 'all 0.2s ease',
-                              cursor: 'pointer',
-                              fontWeight: paymentMethod === method ? 'bold' : 'normal'
-                            }}
-                          >
-                            {method}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
                 )}
               </div>
 
@@ -420,27 +259,15 @@ function CartSidebar() {
                   background: 'var(--bg-secondary)',
                   flexShrink: 0
                 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    <span>Domicilio:</span>
-                    <span>${deliveryFee.toLocaleString('es-CO')}</span>
-                  </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                    <span>Total:</span>
-                    <span style={{ color: 'white' }}>${cartTotal.toLocaleString('es-CO')}</span>
+                    <span>Subtotal:</span>
+                    <span style={{ color: 'white' }}>${subTotal.toLocaleString('es-CO')}</span>
                   </div>
 
                   <motion.button
-                    onClick={sendToWhatsApp}
+                    onClick={() => setIsCheckoutOpen(true)}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
-                    animate={{
-                      boxShadow: [
-                        "0px 0px 0px rgba(229,169,0,0)",
-                        "0px 0px 20px rgba(229,169,0,0.4)",
-                        "0px 0px 0px rgba(229,169,0,0)"
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
                     style={{
                       width: '100%',
                       display: 'block',
@@ -456,7 +283,7 @@ function CartSidebar() {
                       outline: 'none'
                     }}
                   >
-                    Confirmar Pedido
+                    Terminar Pedido
                   </motion.button>
                 </div>
               )}
@@ -472,6 +299,26 @@ function CartSidebar() {
         onConfirm={alertData.onConfirm}
         confirmText={alertData.confirmText}
         cancelText={alertData.cancelText}
+      />
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
+      
+      <ProductCustomizerModal
+        isOpen={!!editingItem}
+        product={editingItem ? (menuItems.find(p => p.id === editingItem.id) || editingItem) : null}
+        onClose={() => {
+          console.log("CartSidebar: onClose de ProductCustomizerModal fue llamado!");
+          setEditingItem(null);
+        }}
+        onAddToCart={(product, qty, extras, comment) => {
+          const basePrice = menuItems.find(p => p.id === editingItem.id)?.price || editingItem.price;
+          updateCartItemFull(editingItem.cartItemId, qty, extras, comment, basePrice);
+          setEditingItem(null);
+        }}
+        allMenuItems={menuItems}
+        initialStep="customize"
+        initialQuantity={editingItem ? editingItem.quantity : 1}
+        initialExtras={editingItem ? (editingItem.extras || []) : []}
+        initialComment={editingItem ? (editingItem.comment || '') : ''}
       />
     </>
   );

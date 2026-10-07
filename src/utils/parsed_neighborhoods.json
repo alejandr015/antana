@@ -1,0 +1,3042 @@
+[
+  {
+    "name": "11 De Noviembre",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Acropolis",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Aeropuerto",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alcala",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Alcala / Candido",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alcala De Berdez",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alamos Norte",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alberto Galindo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alberto Yepes",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Alfonso Lopez Pumarejo",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Alta Maria",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Altamira",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Altamurani",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altavista",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altico",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alto Llano",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos Algarrobos",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos Caña Brava",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De La Colina",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De La Leyenda",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De La Pradera",
+    "price": 9000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De Manzanillo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De Marbella",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De San Nicolas",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos De Tivoli",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alvaro Leyva Lievano",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Alvaro Sanchez Silva",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Amaranto",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Andalucia",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Andaquies",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "ED. Antares",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Antigua",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Antonio Nariño",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Aquaviva",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Aragon",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Arboleda Oriente",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Arrayanes",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Asentamiento Brisas Del Magdalena",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Asentamiento Las Ceibitas",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Balcones De Hayuelos",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Balcones De La Riviera",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Balcones Del Norte",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bajo Pedregal",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Bambu",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Balcones Casa Blanca",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bella Vista",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Bello Horizonte",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bonilla",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Bosques Baviera",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bosques De Cantabria",
+    "price": 10000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bosques De San Luis",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Bosques De Santa Ana",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Bosques Tamarindo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Brisas Caña Brava",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Brisas Del Sena",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Buganviles",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Cacique Chuira",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Calamari",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Calixto",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Camilo Torres",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Cambulos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Camino Real",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Caminos De La Primavera",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Caminos De Oriente",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Campo Nuñez",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Campo Real",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Canaima",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Candido",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Capri",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Caracoli",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Carlos Pizarro",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Casa Blanca",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Casa De Campo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Catleyas",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Ceiba Real",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Centro",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Centro Comercial Santa Lucia",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Chapinero",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Chicala",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ciudad Salitre",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ciudadela Antonio Baraya",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Ciudadela Comfamiliar",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ciudadela Yuma",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Clinica De Fracturas",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Clinica Uros",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Toma Real",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Colinas De Igua",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Colmenar",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Colores",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Comando Policia Palermo",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Combeima",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Concordia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Brisas Del Magdalena",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Cerrado La Magdalena",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Hacienda Santa Maria",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Los Cedros",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Miraflores",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Conjunto Santa Lucia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Cordialidad",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Coruña Berdez",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Cortijo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Diego De Ospina",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Diego Ospina / Centro",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Dujos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Cadiz",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Colonial",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Escorial",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Montanar",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Opalo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio La Primavera",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Puerto Madero",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Edificio Toma Real",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Efraín Rojas Trujillo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. El Caimo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Dorado",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Estadio",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Jardin",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Jordan",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "El Oasis",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "El Otun",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Pedregal",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "El Peñon",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "El Progreso",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Tesoro",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Triunfo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Vergel",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Emcosalud",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Encenillo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Encenillo Casas",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Enrique Olaya Herrera",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Entrepinos",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Frondas Del Guacirco",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Frontera Norte",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Fronteras Del Milenio",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Gaitan",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Gaitana",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Granja San Bernardo",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Granjas",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Guaduales",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Gualanday",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Guatapuri",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hacienda Mayor",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hacienda Santa Maria",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hospital",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Berdez",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Escorial",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Huila Real",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Las Olas",
+    "price": 10000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Metropolitano",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Hotel Plaza",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Icaro",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Ikaria",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ipanema",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Jacaranda",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Jorge Eliecer Gaitan",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Jose Eustacio Rivera",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Jose Marti",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Katakandru",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Kennedy",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Alameda",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Amistad",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "La Arboleda / norte",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Colina",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "La Concordia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Cordialidad",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. La Esmeralda",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Floresta",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. La Fontana",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Fortaleza",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Inmaculada",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Libertad",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Magdalena",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. La Manguita",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Orquidea",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Palma Ii Etapa",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Ed. La Plazuela",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Rioja",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Toma",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. La Union 1 y 2",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Victoria",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Voragine",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Brisas",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Camelias",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Las Delicias",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Ferias",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Granjas",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Mercedes",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Palmas",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Laureles",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Limonar",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Loma De La Cruz",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Los Andaquies",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Andes",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Cipreses",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Colores",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Comuneros",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Dujos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Girasoles",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Laureles",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Martires",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Molinos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Los Nogales",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Pinos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Potros",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Robles",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Rosales",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Los Samanes",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Luis Carlos Galan",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Luis Eduardo Vanegas",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Luis Ignacio Andrade",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Lucca",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Macadamia",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Madrigal",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Malaga",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Mansiones Del Norte",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Manzanares",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Manzanares Iv",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Mediterraneo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Medilaser Abner Lozano / USCO",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Medilaser Cra 7",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Medilaser Myriam Parra / CALLE 9",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Minuto De Dios SUR",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Mira Rio",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Mirador De Algarrobos",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Miraflores /Rioja",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Monserrate",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Monteverde",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Morada Del Viento",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Motel Casa Loma",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Multicentro",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Mykonos",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Nio",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Nuevo Horizonte",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Oasis",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Oro Negro",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Orquidea",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Pablo sexto",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Pacande - Toma",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Pastrana",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Peña Flor",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Pigoanza",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Policia Tenerife",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Pontevedra",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Portal Acazula",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C.Portal De La Sierra",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Portal De San Felipe",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Portal Del Campo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Portal Del Cocli",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Portal Del Rio",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Portales Canaima",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Portales De Varanta",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Pradera Verde",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Praderas De Amborco",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Praderas Del Viento",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Prado Alto",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Prado Norte",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Primero De Mayo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Prohuila",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Puertas Del Eden",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Puertas Del Sol",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. Quintas De Oriente",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Quintas De San Luis",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Reserva De Avichente",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Reserva De Caña Brava",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Reserva De La Sierra",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Reserva Del Cocli",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Reserva Del Prado",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Reservas De La Gaitana",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Rioja",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Riviera Norte",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Rodrigo Lara",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Rosales",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Bernardo",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Ed. San Diego",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Jorge",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Jorge 1",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Jose",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Juan Plaza",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Nicolas",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Pablo",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Pedro",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Sebastian",
+    "price": 14000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Silvestre",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Valentin",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San Vicente Paul",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Bosques de Santa Ana",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Barbara",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Clara",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Ines",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Librada",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Lucia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Monica",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Santa Paula",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santa Sofia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Santander",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Santorini 1 Y 2",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Sevilla",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Siglo 21",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Slavia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Solaris",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Solo Verde",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Tenerife",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "primera Avenida",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Tercer Milenio",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Terminal De Transportes",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Terrazas De Bizancio",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Terravento",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Timanco",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torre 8 34",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres Del Prado",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres Alejandria",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres De Curibano",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres De Ipacarai 1",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres De Ipacarai 2",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres De La Camila",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres Del Oasis",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres Del Prado",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Torres San Telmo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Transmil",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Trinidad",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Valle De San Remo",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Veinte De Julio",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Vergel",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Ed. Versalles",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Victor Felix",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Vigia Del Valle",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Aurora",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Cafe",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Carolina",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Cecilia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Del Rio",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Laurel",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Lucia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Magdalena",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Magdalena Norte",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Milena",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Nadia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Nubia",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Regina",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Rosa",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Sol",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Urbe",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villas Del Campo",
+    "price": 10000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villas Del Prado",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Viña Del Mar",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Viña Del Mar 1",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Volterra",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Yuma",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Zaragoza",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Zona Industrial Sur",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Arezzo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Tiziano",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Goya",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Club campestre",
+    "price": 20000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Rincon campestre",
+    "price": 20000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos de la sabana",
+    "price": 14000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa constanza",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Altos de iguatemi",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. portobelo",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "San pedro plaza",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Alejandria",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Torreladera",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Valle del turin",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Virgilio Barco",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Barrio Municipal",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa Esmeralda",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Condomino Alicante",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "El Doral",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. Las Villas / granjas",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Primavera Verde",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "C. La ensenada",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Calixto",
+    "price": 6000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Villa alejandra",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "La Independencia",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "C. terpel",
+    "price": 8000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Urbanizacion Aldebaran",
+    "price": 7000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Reservas de San Jose",
+    "price": 10000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Las Americas",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  },
+  {
+    "name": "Reinaldo Matiz",
+    "price": 5000,
+    "isRestricted": false,
+    "meetingPointName": "",
+    "meetingPointAddress": "",
+    "customAlertMessage": ""
+  },
+  {
+    "name": "Barrio Plaza Alcid",
+    "price": 0,
+    "isRestricted": true,
+    "meetingPointName": "Punto de Encuentro Seguro",
+    "meetingPointAddress": "Por favor indique un punto central de entrega",
+    "customAlertMessage": "Este barrio se considera de difícil acceso o zona restringida. Por la seguridad de nuestros repartidores, por favor indica un punto de encuentro principal (ej: Un CAI, una avenida principal, etc)."
+  }
+]

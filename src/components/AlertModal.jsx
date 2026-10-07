@@ -45,7 +45,7 @@ function AlertModal({ isOpen, message, title = "Información", onClose, onConfir
               inset: 0,
               background: 'rgba(0,0,0,0.7)',
               backdropFilter: 'blur(5px)',
-              zIndex: 1000,
+              zIndex: 10000,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

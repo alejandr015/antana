@@ -798,6 +798,56 @@
   border-left: 4px solid var(--accent-cyan);
 }
 
+/* ==========================================================================
+   FASE 4: COMPONENTES DE TABLAS Y RESPONSIVE UTILS
+   ========================================================================== */
+
+/* Formularios en línea responsivos (Ej: Agregar Correo VIP) */
+.admin-inline-form {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.admin-inline-form .admin-input {
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .admin-inline-form {
+    flex-direction: column !important;
+  }
+  .admin-inline-form button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Tablas responsivas */
+.admin-table-container {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px; /* Asegura que la tabla no se aplaste en móviles */
+}
+
+/* Ocultar textos innecesarios en móvil para ahorrar espacio */
+@media (max-width: 900px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
 .admin-alert-customizer-box.pink-border {
   border-left: 4px solid var(--accent-pink);
 }
@@ -1178,5 +1228,70 @@ select.admin-input {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(4px);
     z-index: 999;
+  }
+}
+
+/* Sidebar Subnavigation */
+.admin-subnav-container {
+  display: flex;
+  flex-direction: column;
+  padding-left: 3.5rem;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  margin-top: -0.25rem;
+}
+
+.admin-subnav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: left;
+}
+
+.admin-subnav-item:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-subnav-item.active {
+  color: var(--accent-yellow);
+  background: rgba(229, 169, 0, 0.1);
+  font-weight: bold;
+}
+
+/* Modal Expandible (Estilo Libro) */
+@media (min-width: 768px) {
+  .admin-modal-content.admin-modal-compact.admin-modal-wide {
+    max-width: 840px !important;
+  }
+}
+
+.admin-neighborhood-split {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .admin-neighborhood-split.is-expanded {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .admin-neighborhood-split.is-expanded > .form-side {
+    flex: 1;
+    width: 50%;
+  }
+  .admin-neighborhood-split.is-expanded > .options-side {
+    flex: 1;
+    width: 50%;
+    margin-top: 0 !important;
   }
 }

@@ -16,10 +16,41 @@ const Login = lazy(() => import('./pages/Login.jsx'));
 
 // Ruta Protegida
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
+  
+  if (loading) return <LoadingScreen />;
+  
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+  
+  if (!isAdmin) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', padding: '1rem' }}>
+        <div 
+          className="glass"
+          style={{ maxWidth: '400px', width: '100%', padding: '3rem 2rem', borderRadius: '16px', border: '1px solid var(--accent-pink)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}
+        >
+          <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', background: 'var(--accent-pink)', filter: 'blur(80px)', opacity: 0.2, zIndex: 0 }} />
+          
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <h1 style={{ color: 'var(--accent-pink)', marginBottom: '1rem', fontSize: '2rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Acceso Denegado</h1>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+              Tu cuenta ha iniciado sesión correctamente, pero no cuentas con permisos para entrar al Panel de Administrador.
+            </p>
+            <button 
+              className="cta-button" 
+              onClick={() => window.location.href = '/'}
+              style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+              Volver a la Tienda
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   return children;
 };
 
@@ -73,7 +104,14 @@ const NetworkStatus = () => {
 
 function App() {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const { isRecoveringPassword } = useAuth();
+  const isAdminRoute = location.pathname.startsWith('/admin') || isRecoveringPassword;
+
+  // Si el usuario está recuperando su contraseña, forzamos a mostrar Login
+  // para que pueda ingresar su nueva clave.
+  if (isRecoveringPassword && location.pathname !== '/login') {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <CartProvider>

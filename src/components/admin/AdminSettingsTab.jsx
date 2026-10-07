@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Save, Bell, AlertTriangle, XCircle, CheckCircle2, MessageSquare, Info } from 'lucide-react';
+import { Save, Bell, AlertTriangle, XCircle, CheckCircle2, MessageSquare, Info, Settings } from 'lucide-react';
 import { saveSettings } from '../../services/db';
 import { toast } from 'sonner';
 
@@ -70,16 +70,26 @@ function AdminSettingsTab({ settings, setSettings }) {
 
   return (
     <div className="admin-tab-content admin-settings-tab">
-      <div className="admin-action-bar glass">
-        <div className="admin-action-bar-info">
-          <h3>Configuración de Mensajes y Estado del Local</h3>
-          <span className="admin-items-count">
-            Controla alertas previas y la plantilla automática enviada a WhatsApp
-          </span>
+      <div className="admin-tab-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', background: 'linear-gradient(90deg, rgba(229, 169, 0, 0.05) 0%, transparent 100%)', padding: '1.5rem', borderRadius: '12px', borderLeft: '4px solid var(--accent-yellow)', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <div style={{ background: 'rgba(229, 169, 0, 0.1)', width: '56px', height: '56px', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-yellow)', boxShadow: '0 0 20px rgba(229, 169, 0, 0.15)' }}>
+            <MessageSquare size={32} />
+          </div>
+          <div>
+            <h2 className="admin-card-title" style={{ fontSize: '1.8rem', margin: '0 0 0.2rem 0', textShadow: '0 2px 10px rgba(229, 169, 0, 0.2)' }}>Configuración de Mensajes</h2>
+            <p className="admin-card-subtitle" style={{ margin: 0, fontSize: '0.95rem', opacity: 0.8 }}>Controla alertas previas y la plantilla automática enviada a WhatsApp</p>
+          </div>
         </div>
+        <button 
+          className="cta-button admin-create-btn" 
+          onClick={handleSaveSettings}
+        >
+          <Save size={20} />
+          <span>Guardar Configuración</span>
+        </button>
       </div>
 
-      <form onSubmit={handleSaveSettings} className="admin-settings-form-layout">
+      <form className="admin-settings-form-layout">
         
         {/* SECCIÓN 1: ESTADO DEL LOCAL Y ALERTAS PREVIAS */}
         <div className="admin-settings-card glass">
@@ -235,12 +245,6 @@ function AdminSettingsTab({ settings, setSettings }) {
           </div>
         </div>
 
-        {/* BOTÓN FIJADO / DESTACADO PARA GUARDAR */}
-        <div className="admin-settings-submit-bar">
-          <button type="submit" className="cta-button admin-submit-btn large">
-            <Save size={20} /> Guardar Toda la Configuración
-          </button>
-        </div>
       </form>
     </div>
   );

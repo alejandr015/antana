@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Lock, Menu as MenuIcon, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShoppingCart, Menu as MenuIcon, X, Settings } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useBranding } from '../hooks/useBranding';
+import LoadingScreen from './LoadingScreen';
 
 function Navbar() {
   const { cartCount, toggleCart } = useCart();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const branding = useBranding();
   const [scrolled, setScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,7 +23,7 @@ function Navbar() {
         setScrolled(false);
       }
     };
-    
+
     // Si estamos en /menu, forzar el background oscuro
     if (location.pathname !== '/') {
       setScrolled(true);
@@ -32,44 +36,46 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location]);
 
-  // Cerrar menú móvil al cambiar de ruta
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location]);
-
   return (
-    <nav id="navbar" className={scrolled ? 'scrolled' : ''}>
+    <>
+      {isTransitioning && <LoadingScreen />}
+      <nav id="navbar" className={scrolled ? 'scrolled' : ''}>
       <div className="container nav-container">
         <Link to="/" className="logo">
-          <img src="/logo.webp" alt="Antana Logo" className="nav-logo-img" loading="lazy" decoding="async" />
+          <img src={branding.logoUrl} alt="Logo" className="nav-logo-img" loading="lazy" decoding="async" />
           <span className="logo-text">ANT<span>ANA</span></span>
         </Link>
         <ul className="nav-links">
           <li><Link to="/" className="nav-link">Inicio</Link></li>
           <li><Link to="/menu" className="nav-link">Menú</Link></li>
-          {user && (
-            <li><Link to="/admin" className="nav-link">Admin</Link></li>
+          {isAdmin && (
+            <li>
+              <a 
+                href="/admin" 
+                className="nav-link" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsTransitioning(true);
+                  setTimeout(() => {
+                    setIsTransitioning(false);
+                    navigate('/admin');
+                  }, 1200);
+                }}
+              >
+                Admin
+              </a>
+            </li>
           )}
         </ul>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          {!user && (
-            <Link 
-              to="/login" 
-              className="cart-icon-btn" 
-              style={{ color: 'white', padding: '0.5rem', display: 'flex' }}
-              title="Iniciar Sesión Admin"
-            >
-              <Lock size={20} />
-            </Link>
-          )}
-          <button 
-            onClick={toggleCart} 
+          <button
+            onClick={toggleCart}
             className="cart-icon-btn"
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              color: 'white', 
-              cursor: 'pointer', 
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
               position: 'relative',
               padding: '0.5rem'
             }}
@@ -96,28 +102,10 @@ function Navbar() {
               </span>
             )}
           </button>
-          <button 
-            className="mobile-menu-btn"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="mobile-nav-overlay">
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
-            <li><Link to="/" className="nav-link" style={{ fontSize: '1.5rem' }}>Inicio</Link></li>
-            <li><Link to="/menu" className="nav-link" style={{ fontSize: '1.5rem' }}>Menú</Link></li>
-            {user && (
-              <li><Link to="/admin" className="nav-link" style={{ fontSize: '1.5rem', color: 'var(--accent-yellow)' }}>Admin</Link></li>
-            )}
-          </ul>
-        </div>
-      )}
     </nav>
+    </>
   );
 }
 

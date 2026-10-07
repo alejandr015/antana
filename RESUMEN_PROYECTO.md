@@ -1,73 +1,130 @@
-# Resumen del Proyecto "Antana"
+# Documentación del Proyecto "Antana"
 
-Este documento mantiene el contexto completo y actualizado de todo lo que se ha construido en el proyecto.
-
----
-
-## 🛠️ Stack Tecnológico
-- **Frontend:** React 19 (con Vite) + PWA (`vite-plugin-pwa`)
-- **Enrutamiento y Carga:** React Router DOM v7 con **Code Splitting y Lazy Loading** (`React.lazy` y `Suspense`).
-- **Backend / Base de Datos / Storage:** Supabase (PostgreSQL + Supabase Storage con RLS blindado).
-- **Estilos / Animaciones:** CSS puro modular (`style.css` y `admin.css`), Framer Motion (para transiciones y feedback visual).
-- **Iconos:** Lucide React
-- **Notificaciones:** Sonner / AlertModal personalizado
-- **Optimización multimedia:** Pipeline de recorte y compresión a **WebP** en el navegador (HTML5 Canvas + FileReader) y optimización general de assets (Preloads, `loading="lazy"`).
-- **Caché:** Sistema de Caché en memoria (cliente) para reducir requests repetitivos a Supabase.
+Este documento contiene la especificación completa, arquitectura, reglas de negocio y flujos de usuario del proyecto Antana. Está diseñado para servir como base técnica para la elaboración de Historias de Usuario, Casos de Prueba (QA) y futuros requerimientos de software.
 
 ---
 
-## 📁 Estructura del Proyecto
-
-### Páginas (`src/pages/`)
-1. **`Home.jsx`**: Landing page principal con hero section interactivo.
-2. **`Menu.jsx`**: Menú completo con categorías, modal de detalle de producto y agregado al carrito.
-3. **`Login.jsx`**: Inicio de sesión administrativo con autenticación vía Supabase.
-4. **`Admin.jsx`**: **Panel de Administración rediseñado** con sidebar izquierdo colapsable, topbar de control y canvas modular (Solo se descarga si el usuario entra a esta ruta).
-
-### Componentes de Administración (`src/components/admin/`)
-- **`AdminMenuTab.jsx`**: Grid completa de platos con toggles de disponibilidad inmediata (Agotado/Disponible), filtros por categoría y modal de creación/edición.
-- **`AdminNeighborhoodModal.jsx`**: Modal auxiliar flotante con fondo borroso (`backdrop-filter: blur`) para crear y editar tarifas de barrios.
-- **`AdminProductModal.jsx`**: Modal auxiliar flotante con vista previa y subida/recorte automático de fotos directo a Supabase Storage.
-- **`AdminNeighborhoodsTab.jsx`**: Gestión de barrios y costos de envío.
-- **`AdminSettingsTab.jsx`**: Panel de control intuitivo con 3 modos de estado del local (Normal, Demoras, Cerrado) y chips clicables de variables para la plantilla de WhatsApp.
-
-### Componentes Globales (`src/components/`)
-- **`Navbar.jsx`**: Barra superior de navegación adaptable para la tienda (se oculta automáticamente en `/admin` para maximizar el área de trabajo y evitar distracciones).
-- **`Footer.jsx`**: Pie de página con información del negocio y enlaces (oculto en `/admin`).
-- **`CartSidebar.jsx`**: Carrito deslizable (drawer inferior en móvil, lateral en PC) con cálculo de envío por barrio y lógica inteligente de inyección de tiempos de espera en base a la configuración de alertas.
-- **`AlertModal.jsx`**: Modal reutilizable para confirmaciones y alertas de negocio.
-- **`LoadingScreen.jsx`**: Pantalla de transición estética con resplandor para cargas y *fallbacks* de componentes perezosos (Lazy Loading).
+## 1. Visión General del Producto
+Antana es una aplicación web (PWA) de comercio electrónico enfocada en la venta de comida rápida (Hamburguesas, Salchipapas, Perros Calientes y Bebidas). Cuenta con dos módulos principales:
+1. **App de Cliente (Frontend):** Plataforma intuitiva con animaciones de alta calidad (micro-interacciones, morphing, etc.) para visualización del menú, personalización detallada de platos y un flujo de checkout que culmina en un pedido vía WhatsApp.
+2. **Panel de Administración (Backoffice):** Interfaz protegida para la gestión integral de productos (creación, edición, eliminación, recorte/optimización de imágenes, control de inventario/stock), gestión de costos de domicilio (barrios) y control del estado operativo del local.
 
 ---
 
-## 🚀 Mejoras Implementadas
-
-### Fases de UI/UX Administrativa
-1. **Fase 1 - Sidebar Izquierdo Retraíble:**
-   - Barra lateral anclada a la izquierda que se retrae y expande mediante un botón con animación suave.
-   - En móviles se despliega como un menú lateral seguro (drawer con oscurecimiento y blur). Altura dinámica (`100dvh`) para no ser obstaculizada por la barra de navegación del celular.
-   - Optimiza al 100% el ancho de pantalla para la gestión de productos.
-
-2. **Fase 2 - Pantallas Auxiliares (Modales Flotantes con Blur):**
-   - Eliminados los formularios estáticos que ocupaban espacio permanente.
-   - Ahora, al presionar **"Añadir Nuevo Plato"**, **"Añadir Barrio"** o al **editar** cualquier elemento, se abre una ventana auxiliar centrada con desenfoque de fondo (`backdrop-filter: blur(10px)`).
-   - Optimizado para pantallas táctiles y móviles: botones táctiles grandes, previsualización de imagen recortada y cierre fácil.
-
-3. **Fase 3 - Rediseño Intuitivo de Mensajes y Estado:**
-   - Sustitución de checkboxes confusos por **3 tarjetas de estado visual** con códigos de color claros:
-     - 🟢 **Operación Normal:** Inyección de tiempos estándar o mensajes informativos en el flujo normal, paso directo a WhatsApp.
-     - 🔵 **Demoras / Tiempo de Espera:** Mensaje preventivo, advierte al usuario del retraso pero le permite continuar.
-     - 🔴 **Local Cerrado / Sin Domicilios:** Bloqueo total del paso al pedido.
-   - **Chips de variables clicables:** Inserta etiquetas como `{pedido}`, `{barrio}`, `{direccion}`, etc. en la plantilla de WhatsApp con 1 solo toque.
-
-### Auditoría y Optimización de Rendimiento (QA & Performance)
-1. **Code Splitting (Separación de Código):** La aplicación pública y el panel administrativo están separados mediante `React.lazy`. Los clientes públicos ya no descargan dependencias de edición (ej. `react-easy-crop`) agilizando inmensamente el tiempo de primera pintura (FCP).
-2. **Assets Ultraligeros:** 
-   - Conversión de imágenes pesadas a **formato WebP** de próxima generación (ej. hero y logo perdieron entre 68% y 86% de peso sin perder calidad visual).
-   - Implementación de preloads en `index.html` para la imagen *Hero* que previene parpadeos (LCP Optimizado).
-3. **Lazy Loading de Imágenes:** Todas las imágenes del menú incorporan `loading="lazy" decoding="async"` para ahorrar ancho de banda.
-4. **Caché de Base de Datos en Memoria:** El archivo `db.js` cachea las llamadas a la carta de productos (con un TTL), logrando que segundas navegaciones de los clientes al Menú sean **instantáneas**, y ahorrando peticiones pagas (reads) a Supabase.
-5. **Correcciones CSS Móviles:** Uso global de unidades `dvh` (*Dynamic Viewport Height*) para corregir desbordes y problemas con la interfaz del navegador en iOS y Android.
+## 2. 🛠️ Arquitectura y Stack Tecnológico
+- **Frontend Core:** React 19, Vite, React Router DOM v7.
+- **PWA:** Configurado vía `vite-plugin-pwa` para instalación nativa y offline caching.
+- **Performance:** Code Splitting / Lazy Loading (`React.lazy` y `Suspense`) para separar el bundle administrativo del bundle del cliente.
+- **Backend / BaaS:** Supabase (PostgreSQL + Auth + Storage).
+- **Estilos:** CSS Modules y variables CSS personalizadas (`style.css`, `admin.css`).
+- **Animaciones:** Framer Motion (Transiciones de modales, morphing de elementos, layout animations).
+- **Iconografía:** Lucide React.
+- **Notificaciones:** Sonner y Modales de Alerta Personalizados (`AlertModal.jsx`).
+- **Optimización de Assets:** Sistema nativo (Canvas HTML5) para recortar imágenes a formato cuadrado y comprimirlas a WebP antes de subirlas a Supabase. Implementación de `loading="lazy"` y `decoding="async"`.
 
 ---
-*Última actualización: 21 de Septiembre de 2026*
+
+## 3. 🗄️ Modelo de Datos (Supabase)
+
+El sistema utiliza principalmente dos tablas y almacenamiento (Storage):
+
+### Tabla: `menu_items`
+Contiene la totalidad de productos principales y complementarios (extras). La lógica del sistema se apoya fuertemente en la columna `category`.
+- `id` (UUID): Identificador único.
+- `name` (String): Nombre del producto o extra.
+- `description` (Text): Descripción detallada.
+- `price` (Number): Precio (0 para salsas o complementos gratuitos).
+- `category` (String): Campo CRÍTICO que determina cómo y dónde se renderiza el producto.
+- `image_url` (String): Ruta pública de Supabase Storage.
+- `is_out_of_stock` (Boolean): Flag de disponibilidad (Agotado/Disponible).
+- `created_at` (Timestamp).
+
+### Tabla: `neighborhoods`
+Gestiona los costos de envío dinámicos.
+- `id` (UUID)
+- `name` (String): Nombre del barrio.
+- `delivery_cost` (Number): Costo de envío a este barrio.
+
+### Supabase Storage
+- **Bucket:** `menu-images`. Reglas RLS públicas para lectura, protegidas para escritura (solo usuarios autenticados).
+
+---
+
+## 4. 🧠 Reglas de Negocio y Lógica de Personalización
+
+La aplicación tiene una lógica dinámica para evitar que los usuarios hagan combinaciones ilógicas (ej. agregar "Aros de Cebolla" a una "Bebida"). 
+
+### Categorías Principales
+Los productos principales que el cliente puede agregar al carrito pertenecen a:
+- `Hamburguesas`
+- `Salchipapas`
+- `Perros Calientes`
+- `Bebidas`
+- `Adicionales`
+
+### Extras (Modificadores)
+Los extras se guardan en la misma tabla `menu_items` pero bajo categorías especiales con el prefijo `Extras - `.
+El componente `ProductCustomizerModal.jsx` renderiza dinámicamente las pestañas según la categoría del producto principal que el cliente selecciona:
+
+1. **Producto tipo `Hamburguesas`:**
+   - Muestra pestañas: `+ Salsas` y `+ Ingredientes`
+   - Salsas toma items de: `Extras - Salsas`
+   - Ingredientes toma items de: `Extras - Ingredientes Hamburguesas`
+
+2. **Producto tipo `Perros Calientes`:**
+   - Muestra pestañas: `+ Salsas` y `+ Ingredientes`
+   - Ingredientes toma items de: `Extras - Ingredientes Perros`
+
+3. **Producto tipo `Salchipapas`:**
+   - Muestra pestañas: `+ Salsas` y `+ Ingredientes`
+   - Ingredientes toma items de: `Extras - Ingredientes Salchipapas`
+
+4. **Producto tipo `Bebidas`:**
+   - Muestra pestaña única: `+ Michelados`
+   - Toma items de: `Extras - Michelados`
+
+---
+
+## 5. 🧑‍💻 Flujos de Usuario (User Journeys)
+
+### Flujo del Cliente (End-User)
+1. **Navegación:** El usuario entra al `Home` o `Menu` y visualiza la carta. El menú está agrupado por categorías con búsqueda en tiempo real. Si un producto está `is_out_of_stock = true`, se muestra bloqueado y con etiqueta "AGOTADO".
+2. **Personalización:** Al tocar un producto, no se agrega de inmediato. Se abre el `ProductCustomizerModal`.
+   - Selecciona la cantidad (mínimo 1).
+   - Agrega Salsas (con multiselección visual).
+   - Agrega Ingredientes extra (cada uno suma al subtotal de ese plato individual).
+   - Agrega Comentarios/Notas específicas (ej. "Sin cebolla cabezona").
+3. **Animación Morphing de Carrito:** Al presionar "Agregar al carrito", el modal no se cierra abruptamente. Ocurre una animación continua donde el contenido del modal desaparece, el contenedor se encoge, toma la forma de un vector de hamburguesa iluminado, y viaja en parábola hacia el botón del carrito (`Menu.jsx`).
+4. **Sidebar del Carrito:** El cliente revisa los ítems consolidados y su subtotal. 
+5. **Checkout (`CheckoutModal.jsx`):**
+   - El cliente ingresa: Nombre, Barrio (Dropdown), Dirección y Método de pago.
+   - El costo de domicilio se suma automáticamente.
+   - Si el panel de admin tiene activo una "Alerta de Demora" o "Local Cerrado", se inyectan las advertencias correspondientes o se bloquea el botón.
+   - Se genera el link de WhatsApp con el desglose exacto (Plato, Cantidad, Extras, Subtotal, Costo de envío, Total).
+
+### Flujo del Administrador (Backoffice)
+1. **Autenticación:** Ingreso mediante usuario (email) y contraseña gestionado vía Auth de Supabase en `/login`.
+2. **Interfaz:** Diseño responsivo con Sidebar izquierdo colapsable (`Admin.jsx`). Las ventanas de acciones (Crear/Editar) se abren como modales centrados flotantes con `backdrop-filter: blur(10px)`.
+3. **Gestión de Menú (`AdminMenuTab.jsx`):**
+   - CRUD de la tabla `menu_items`.
+   - **Upload de Imágenes:** Usa `react-easy-crop` integrado. Al cargar foto, el usuario encuadra (formato cuadrado ratio 1:1), el sistema recorta, escala a max 500x500px, convierte a `WebP` de forma invisible y lo sube al bucket.
+   - **Eliminación Segura:** Utiliza un modal (`AlertModal`) para confirmar la acción destructiva (eliminando el uso de `window.confirm` genéricos).
+   - **Switch de Stock:** Botón rápido (tipo toggle) para alternar el estado `is_out_of_stock` (bloqueo/desbloqueo inmediato).
+4. **Gestión de Barrios (`AdminNeighborhoodsTab.jsx`):**
+   - Creación, edición (nombre, precio) y eliminación de los costos de entrega.
+5. **Gestión de Configuración Operativa (`AdminSettingsTab.jsx`):**
+   - Control de Estado Local: 3 Tarjetas visuales (Operación Normal, Demoras/Tiempo de Espera, Cerrado temporalmente).
+   - Variables dinámicas de WhatsApp (permite armar el template que recibirá el local, usando chips como `{pedido}`, `{total}`).
+
+---
+
+## 6. 📝 Criterios de Aceptación Clave (Para QA / Pruebas)
+
+- **QC-01 (Caché):** Si el menú se cargó recientemente, navegar a otra página y volver al menú no debe desencadenar un nuevo fetch a Supabase (tiempo de carga 0ms).
+- **QC-02 (RLS & Seguridad):** Las mutaciones a la BD (Insert, Update, Delete) solo deben ejecutarse si existe un token de sesión de Supabase válido. Si un cliente público inspecciona la red e intenta forzar una escritura, debe obtener un error 401/403 de Row Level Security.
+- **QC-03 (Consistencia de Precios):** El precio de los extras debe multiplicar correctamente en el `ProductCustomizerModal` por la `quantity` elegida, y debe reflejarse fielmente en el `CartContext`.
+- **QC-04 (Animaciones de Interfaz):** Todas las alertas destructivas (Eliminar) deben usar `AlertModal.jsx`. Las alertas informativas deben usar `toast` (Sonner).
+- **QC-05 (Filtros de Extras):** Un producto con categoría "Bebidas" **NUNCA** debe renderizar pestañas de Salsas ni Ingredientes. Solo "Michelados".
+
+---
+*Fin del Documento Maestro.*
