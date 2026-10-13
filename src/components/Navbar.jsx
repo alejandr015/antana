@@ -46,8 +46,34 @@ function Navbar() {
           <span className="logo-text">ANT<span>ANA</span></span>
         </Link>
         <ul className="nav-links">
-          <li><Link to="/" className="nav-link">Inicio</Link></li>
-          <li><Link to="/menu" className="nav-link">Menú</Link></li>
+          <li>
+            <Link 
+              to="/" 
+              className="nav-link"
+              onClick={() => {
+                if (location.pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            >
+              Inicio
+            </Link>
+          </li>
+          <li>
+            <Link 
+              to="/menu" 
+              className="nav-link"
+              onClick={(e) => {
+                const el = document.getElementById('menu');
+                if (el && location.pathname === '/') {
+                  e.preventDefault();
+                  el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              Menú
+            </Link>
+          </li>
           {isAdmin && (
             <li>
               <a 

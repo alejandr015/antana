@@ -12,7 +12,7 @@ import { useSessionState } from '../hooks/useSessionState';
 import { useBranding } from '../hooks/useBranding';
 
 
-function Menu() {
+function Menu({ isEmbedded = false }) {
   const branding = useBranding();
   const [menuItems, setMenuItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +73,7 @@ function Menu() {
 
   return (
     <>
-      <section id="menu" style={{ paddingTop: '130px', paddingBottom: '40px' }}>
+      <section id="menu" style={{ paddingTop: isEmbedded ? '40px' : '130px', paddingBottom: '40px' }}>
         <div className="container">
           <div className="section-header reveal active" style={{ marginBottom: '1rem', marginTop: '0' }}>
             <span className="section-subtitle">Nuestra Carta</span>

@@ -112,18 +112,112 @@ img {
 /* Hero Section */
 #hero {
   position: relative;
-  height: 100vh;
+  min-height: 85vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  padding: 130px 0 3.5rem 0;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
   text-align: center;
-  max-width: 800px;
+  max-width: 950px;
+  width: 100%;
+}
+
+/* Barra de información rápida en el inicio */
+.hero-quick-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  text-align: left;
+}
+
+.quick-info-card {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.quick-info-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(229, 169, 0, 0.5);
+  background: rgba(229, 169, 0, 0.05);
+}
+
+.quick-info-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(229, 169, 0, 0.12);
+  color: var(--accent-yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(229, 169, 0, 0.2);
+}
+
+.quick-info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quick-info-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.quick-info-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.quick-social-btns {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.quick-social-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.2s ease;
+}
+
+.quick-social-pill:hover {
+  background: var(--accent-yellow);
+  color: black;
+  transform: scale(1.12);
+  border-color: var(--accent-yellow);
 }
 
 .hero-badge {

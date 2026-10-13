@@ -143,13 +143,10 @@ function Footer() {
 
               <motion.div whileHover={{ x: 5 }} style={{ transition: 'transform 0.2s' }}>
                 <span style={{ color: 'var(--accent-yellow)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Phone size={14} /> Líneas de atención
+                  <Phone size={14} /> Línea de atención
                 </span>
                 <a href="tel:+573204449987" style={{ display: 'block', color: 'var(--text-secondary)', marginTop: '0.5rem', textDecoration: 'none', fontSize: '1.05rem', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}>
                   320 444 9987
-                </a>
-                <a href="tel:+573112386228" style={{ display: 'block', color: 'var(--text-secondary)', marginTop: '0.2rem', textDecoration: 'none', fontSize: '1.05rem', transition: 'color 0.2s' }} onMouseOver={e => e.target.style.color = '#fff'} onMouseOut={e => e.target.style.color = 'var(--text-secondary)'}>
-                  311 238 6228
                 </a>
               </motion.div>
             </div>

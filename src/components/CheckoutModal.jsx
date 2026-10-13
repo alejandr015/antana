@@ -9,7 +9,9 @@ import { useSessionState } from '../hooks/useSessionState';
 
 function CheckoutModal({ isOpen, onClose }) {
   const { cartItems, subTotal, clearCart, setIsCartOpen } = useCart();
+  const [orderType, setOrderType] = useSessionState('antana_checkout_orderType', 'delivery'); // 'delivery' | 'pickup'
   const [address, setAddress] = useSessionState('antana_checkout_address', "");
+  const [housingDetails, setHousingDetails] = useSessionState('antana_checkout_housingDetails', "");
   const [customerName, setCustomerName] = useSessionState('antana_checkout_name', "");
   const [customerPhone, setCustomerPhone] = useSessionState('antana_checkout_phone', "");
   const [paymentMethod, setPaymentMethod] = useSessionState('antana_checkout_paymentMethod', "Efectivo");
@@ -22,7 +24,7 @@ function CheckoutModal({ isOpen, onClose }) {
   
   useHardwareBack(isOpen, onClose, 'checkoutModal');
   
-  const deliveryFee = selectedNeighborhood ? selectedNeighborhood.price : 0;
+  const deliveryFee = orderType === 'delivery' && selectedNeighborhood ? selectedNeighborhood.price : 0;
   const cartTotal = subTotal + deliveryFee;
 
   useEffect(() => {
@@ -41,6 +43,7 @@ function CheckoutModal({ isOpen, onClose }) {
             if (profile.name) setCustomerName(profile.name);
             if (profile.phone) setCustomerPhone(profile.phone);
             if (profile.address) setAddress(profile.address);
+            if (profile.housingDetails) setHousingDetails(profile.housingDetails);
           } catch(e) {}
         }
       }
@@ -49,11 +52,16 @@ function CheckoutModal({ isOpen, onClose }) {
   }, [isOpen]);
 
   const executeWhatsAppOrder = async (settings) => {
+    const fullAddress = orderType === 'delivery'
+      ? `${address}${housingDetails ? ` (Conjunto/Torre/Apto: ${housingDetails})` : ''}`
+      : 'Punto de Venta Antana (Cra. 5a #21-54, Neiva)';
+
     const orderData = {
       customer_name: customerName,
       customer_phone: customerPhone,
-      neighborhood: selectedNeighborhood.name,
-      address: address,
+      order_type: orderType,
+      neighborhood: orderType === 'delivery' ? (selectedNeighborhood?.name || 'No especificado') : 'Recoger en el local',
+      address: fullAddress,
       payment_method: paymentMethod,
       items: cartItems,
       subtotal: subTotal,
@@ -83,18 +91,24 @@ function CheckoutModal({ isOpen, onClose }) {
       return line;
     }).join('\n\n');
 
+    const orderTypeTitle = orderType === 'delivery'
+      ? '🛵 *TIPO: PEDIDO A DOMICILIO*'
+      : '🛍️ *TIPO: RECOGER EN EL LOCAL (Cra. 5a #21-54)*';
+
     const isDelayActive = settings.preOrderAlert && settings.preOrderAlert.active && settings.preOrderAlert.allowContinue;
     const tiempoEsperaMsg = isDelayActive
       ? (settings.delayAlert?.message || '')
-      : (settings.normalAlert?.message || '');
+      : '';
 
     let finalMessage = settings.whatsappTemplate
-      .replace('{pedido}', orderText)
+      .replace('{pedido}', `${orderTypeTitle}\n\n${orderText}`)
       .replace('{nombre}', customerName)
       .replace('{celular}', customerPhone)
-      .replace('{barrio}', selectedNeighborhood.name)
-      .replace('{direccion}', selectedNeighborhood.isRestricted ? `📍 PUNTO DE ENCUENTRO: ${address}` : address)
-      .replace('{domicilio}', `$${deliveryFee.toLocaleString('es-CO')}`)
+      .replace('{barrio}', orderType === 'delivery' ? selectedNeighborhood.name : 'Recoger en el local')
+      .replace('{direccion}', orderType === 'delivery' 
+        ? (selectedNeighborhood.isRestricted ? `📍 PUNTO DE ENCUENTRO: ${fullAddress}` : fullAddress) 
+        : 'Cra. 5a #21-54, Neiva')
+      .replace('{domicilio}', orderType === 'delivery' ? `$${deliveryFee.toLocaleString('es-CO')}` : '$0 (Para Recoger)')
       .replace('{metodo_pago}', paymentMethod)
       .replace('{total}', `$${cartTotal.toLocaleString('es-CO')}`)
       .replace('{tiempo_espera}', tiempoEsperaMsg ? `*Tiempo estimado:* ${tiempoEsperaMsg}` : '');
@@ -106,7 +120,8 @@ function CheckoutModal({ isOpen, onClose }) {
       localStorage.setItem('antana_saved_profile', JSON.stringify({
         name: customerName,
         phone: customerPhone,
-        address: address
+        address: address,
+        housingDetails: housingDetails
       }));
     } else {
       localStorage.removeItem('antana_saved_profile');
@@ -127,17 +142,22 @@ function CheckoutModal({ isOpen, onClose }) {
       setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, ingresa tu número de celular.", onConfirm: null });
       return;
     }
-    if (!selectedNeighborhood) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, selecciona tu barrio de la lista para calcular el costo del domicilio antes de hacer el pedido.", onConfirm: null });
-      return;
-    }
-    if (!address.trim()) {
-      setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, escribe tu dirección exacta para poder entregar tu pedido sin inconvenientes.", onConfirm: null });
-      return;
+
+    // Si es a domicilio, validamos barrio y dirección obligatoria
+    if (orderType === 'delivery') {
+      if (!selectedNeighborhood) {
+        setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, selecciona tu barrio de la lista para calcular el costo del domicilio antes de hacer el pedido.", onConfirm: null });
+        return;
+      }
+      if (!address.trim()) {
+        setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, escribe tu dirección exacta para poder entregar tu pedido sin inconvenientes.", onConfirm: null });
+        return;
+      }
     }
 
     const settings = await getSettings();
 
+    // Si hay una alerta activa configurada en el panel (como local cerrado o aviso especial)
     if (settings.preOrderAlert && settings.preOrderAlert.active) {
       const isAllowed = settings.preOrderAlert.allowContinue;
       const profile = isAllowed
@@ -153,14 +173,8 @@ function CheckoutModal({ isOpen, onClose }) {
         cancelText: isAllowed ? 'Volver' : 'Entendido'
       });
     } else {
-      setAlertData({
-        isOpen: true,
-        title: settings.normalAlert?.title || 'Confirmación de Pedido',
-        message: settings.normalAlert?.message || 'Tu pedido tardará de 25 a 35 minutos aproximadamente.',
-        onConfirm: () => executeWhatsAppOrder(settings),
-        confirmText: 'Aceptar',
-        cancelText: 'Volver'
-      });
+      // Se pasa directo a WhatsApp sin mostrar falsos tiempos previos antes de verificar el pago
+      executeWhatsAppOrder(settings);
     }
   };
 
@@ -214,7 +228,55 @@ function CheckoutModal({ isOpen, onClose }) {
               <X size={20} />
             </button>
 
-            <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem', textAlign: 'center' }}>Detalles de Entrega</h2>
+            <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem', textAlign: 'center' }}>Detalles de tu Pedido</h2>
+
+            {/* Selector de Modalidad: A Domicilio vs. Recoger en Local */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '12px' }}>
+              <button
+                type="button"
+                onClick={() => setOrderType('delivery')}
+                style={{
+                  flex: 1,
+                  padding: '0.8rem 0.5rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: orderType === 'delivery' ? 'var(--accent-yellow)' : 'transparent',
+                  color: orderType === 'delivery' ? 'black' : 'white',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span>🛵 A Domicilio</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setOrderType('pickup')}
+                style={{
+                  flex: 1,
+                  padding: '0.8rem 0.5rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: orderType === 'pickup' ? 'var(--accent-yellow)' : 'transparent',
+                  color: orderType === 'pickup' ? 'black' : 'white',
+                  fontWeight: 'bold',
+                  fontSize: '0.9rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span>🛍️ Recoger en Local</span>
+              </button>
+            </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
@@ -247,105 +309,137 @@ function CheckoutModal({ isOpen, onClose }) {
                 />
               </div>
 
-              <div>
-                <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                  Barrio <span style={{ color: 'var(--accent-pink)' }}>*</span>
-                </p>
-                <div style={{ position: 'relative' }}>
-                  <div 
-                    className="search-input" 
-                    style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    <span style={{ color: selectedNeighborhood ? 'white' : 'var(--text-secondary)' }}>
-                      {selectedNeighborhood ? `${selectedNeighborhood.name} (+${selectedNeighborhood.price.toLocaleString('es-CO')})` : '-- Selecciona un barrio --'}
-                    </span>
-                    <ChevronDown size={18} style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s' }} />
-                  </div>
-
-                  <AnimatePresence>
-                    {isDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        style={{
-                          position: 'absolute',
-                          top: '100%',
-                          left: 0,
-                          right: 0,
-                          background: 'var(--bg-secondary)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          borderRadius: '12px',
-                          marginTop: '8px',
-                          maxHeight: '250px',
-                          overflowY: 'auto',
-                          zIndex: 10,
-                          boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
-                        }}
+              {/* Si es para recoger, mostramos tarjeta informativa de la sede */}
+              {orderType === 'pickup' ? (
+                <div style={{ background: 'rgba(229,169,0,0.08)', border: '1px solid var(--accent-yellow)', borderRadius: '12px', padding: '1.2rem', textAlign: 'center' }}>
+                  <p style={{ margin: '0 0 0.3rem 0', fontWeight: 'bold', color: 'var(--accent-yellow)', fontSize: '1rem' }}>
+                    📍 Retiro en el Punto de Venta
+                  </p>
+                  <p style={{ margin: 0, fontSize: '0.95rem', color: 'white', fontWeight: 500 }}>
+                    Cra. 5a #21-54, Neiva (Antana Hamburguesería)
+                  </p>
+                  <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    Te avisaremos por WhatsApp en cuanto tu pedido esté empacado y listo para retirar.
+                  </p>
+                </div>
+              ) : (
+                /* Si es a domicilio, mostramos barrio, dirección obligatoria y conjunto/apto */
+                <>
+                  <div>
+                    <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
+                      Barrio <span style={{ color: 'var(--accent-pink)' }}>*</span>
+                    </p>
+                    <div style={{ position: 'relative' }}>
+                      <div 
+                        className="search-input" 
+                        style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       >
-                        <div style={{ position: 'sticky', top: 0, background: 'var(--bg-secondary)', padding: '0.8rem', borderBottom: '1px solid rgba(255,255,255,0.1)', zIndex: 11 }}>
-                          <div style={{ position: 'relative' }}>
-                            <SearchIcon size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
-                            <input
-                              type="text"
-                              placeholder="Escribe para buscar..."
-                              value={nbSearchTerm}
-                              onChange={(e) => setNbSearchTerm(e.target.value)}
-                              style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.2rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'white', boxSizing: 'border-box' }}
-                              autoFocus
-                            />
-                          </div>
-                        </div>
-                        {neighborhoods.filter(nb => nb.name.toLowerCase().includes(nbSearchTerm.toLowerCase())).map(nb => (
-                          <div
-                            key={nb.id}
-                            onClick={() => {
-                              handleSelectNeighborhood(nb);
-                              setNbSearchTerm('');
-                            }}
+                        <span style={{ color: selectedNeighborhood ? 'white' : 'var(--text-secondary)' }}>
+                          {selectedNeighborhood ? `${selectedNeighborhood.name} (+${selectedNeighborhood.price.toLocaleString('es-CO')})` : '-- Selecciona un barrio --'}
+                        </span>
+                        <ChevronDown size={18} style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s' }} />
+                      </div>
+
+                      <AnimatePresence>
+                        {isDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
                             style={{
-                              padding: '1rem',
-                              borderBottom: '1px solid rgba(255,255,255,0.05)',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              color: selectedNeighborhood?.id === nb.id ? 'var(--accent-yellow)' : 'white',
-                              background: selectedNeighborhood?.id === nb.id ? 'rgba(255,255,255,0.05)' : 'transparent'
+                              position: 'absolute',
+                              top: '100%',
+                              left: 0,
+                              right: 0,
+                              background: 'var(--bg-secondary)',
+                              border: '1px solid rgba(255,255,255,0.1)',
+                              borderRadius: '12px',
+                              marginTop: '8px',
+                              maxHeight: '250px',
+                              overflowY: 'auto',
+                              zIndex: 10,
+                              boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
                             }}
                           >
-                            <span>{nb.name}</span>
-                            <span style={{ color: 'var(--text-secondary)' }}>+${nb.price.toLocaleString('es-CO')}</span>
-                          </div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
+                            <div style={{ position: 'sticky', top: 0, background: 'var(--bg-secondary)', padding: '0.8rem', borderBottom: '1px solid rgba(255,255,255,0.1)', zIndex: 11 }}>
+                              <div style={{ position: 'relative' }}>
+                                <SearchIcon size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+                                <input
+                                  type="text"
+                                  placeholder="Escribe para buscar..."
+                                  value={nbSearchTerm}
+                                  onChange={(e) => setNbSearchTerm(e.target.value)}
+                                  style={{ width: '100%', padding: '0.6rem 1rem 0.6rem 2.2rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'white', boxSizing: 'border-box' }}
+                                  autoFocus
+                                />
+                              </div>
+                            </div>
+                            {neighborhoods.filter(nb => nb.name.toLowerCase().includes(nbSearchTerm.toLowerCase())).map(nb => (
+                              <div
+                                key={nb.id}
+                                onClick={() => {
+                                  handleSelectNeighborhood(nb);
+                                  setNbSearchTerm('');
+                                }}
+                                style={{
+                                  padding: '1rem',
+                                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                  cursor: 'pointer',
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  color: selectedNeighborhood?.id === nb.id ? 'var(--accent-yellow)' : 'white',
+                                  background: selectedNeighborhood?.id === nb.id ? 'rgba(255,255,255,0.05)' : 'transparent'
+                                }}
+                              >
+                                <span>{nb.name}</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>+${nb.price.toLocaleString('es-CO')}</span>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
 
-              <div>
-                <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                  Dirección exacta
-                </p>
-                <input
-                  type="text"
-                  placeholder="Ej: Cra 16 #34a-10, Gualanday"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="search-input"
-                  autoComplete="street-address"
-                  style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
-                />
-              </div>
+                  <div>
+                    <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
+                      Dirección exacta <span style={{ color: 'var(--accent-pink)' }}>*</span>
+                    </p>
+                    <input
+                      type="text"
+                      placeholder="Ej: Cra 16 #34a-10"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      className="search-input"
+                      autoComplete="street-address"
+                      style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
+                      Conjunto / Edificio / Casa / Torre / Apto
+                    </p>
+                    <input
+                      type="text"
+                      placeholder="Ej: Conjunto Ipanema, Torre 3, Apto 402"
+                      value={housingDetails}
+                      onChange={(e) => setHousingDetails(e.target.value)}
+                      className="search-input"
+                      style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                </>
+              )}
 
               <div>
                 <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
                   Método de pago
                 </p>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  {["Efectivo", "Transferencia", "Tarjeta"].map(method => {
-                    const isDisabled = selectedNeighborhood?.isRestricted && method !== "Transferencia";
+                  {["Efectivo", "Transferencia"].map(method => {
+                    const isDisabled = orderType === 'delivery' && selectedNeighborhood?.isRestricted && method !== "Transferencia";
                     return (
                     <button
                       key={method}
@@ -378,8 +472,10 @@ function CheckoutModal({ isOpen, onClose }) {
                 <span>${subTotal.toLocaleString('es-CO')}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                <span>Domicilio:</span>
-                <span>${deliveryFee.toLocaleString('es-CO')}</span>
+                <span>{orderType === 'delivery' ? 'Domicilio:' : 'Modalidad de entrega:'}</span>
+                <span style={{ color: orderType === 'pickup' ? 'var(--accent-cyan)' : 'inherit' }}>
+                  {orderType === 'delivery' ? `$${deliveryFee.toLocaleString('es-CO')}` : 'Gratis (Recoger en local)'}
+                </span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', fontSize: '1.3rem', fontWeight: 'bold' }}>
                 <span>Total:</span>
