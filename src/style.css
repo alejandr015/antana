@@ -128,54 +128,83 @@ img {
   width: 100%;
 }
 
-/* Barra de información rápida en el inicio */
+/* Barra de información rápida en el inicio (2 Filas x 2 Columnas) */
 .hero-quick-bar {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas:
+    "horario ubicacion"
+    "pedidos redes";
+  gap: 1.25rem;
+  margin-top: 2.5rem;
   width: 100%;
   text-align: left;
+  align-items: stretch;
+}
+
+.card-horario {
+  grid-area: horario;
+}
+
+.card-ubicacion {
+  grid-area: ubicacion;
+}
+
+.card-pedidos {
+  grid-area: pedidos;
+}
+
+.card-redes {
+  grid-area: redes;
 }
 
 .quick-info-card {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.9rem 1.1rem;
-  border-radius: 14px;
+  gap: 1rem;
+  padding: 1.15rem 1.3rem;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   text-decoration: none;
   color: inherit;
+  min-height: 94px;
+  box-sizing: border-box;
 }
 
 .quick-info-card:hover {
   transform: translateY(-3px);
   border-color: rgba(229, 169, 0, 0.5);
   background: rgba(229, 169, 0, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.quick-info-social-card {
+  align-items: center;
+  justify-content: center;
 }
 
 .quick-info-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: rgba(229, 169, 0, 0.12);
   color: var(--accent-yellow);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(229, 169, 0, 0.2);
+  border: 1px solid rgba(229, 169, 0, 0.25);
 }
 
 .quick-info-details {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  flex: 1;
 }
 
 .quick-info-label {
@@ -187,37 +216,118 @@ img {
 }
 
 .quick-info-val {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
-.quick-social-btns {
+/* Fila de botones de redes sociales destacados */
+.quick-social-btns-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   align-items: center;
-  margin-top: 2px;
+  margin-top: 4px;
+  width: 100%;
 }
 
-.quick-social-pill {
+.brand-social-btn {
+  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all 0.2s ease;
+  gap: 0.7rem;
+  padding: 0.8rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #ffffff !important;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  min-height: 48px;
+  box-sizing: border-box;
 }
 
-.quick-social-pill:hover {
-  background: var(--accent-yellow);
-  color: black;
-  transform: scale(1.12);
-  border-color: var(--accent-yellow);
+/* Instagram con gradiente oficial característico */
+.brand-social-btn.ig-btn {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  box-shadow: 0 4px 16px rgba(220, 39, 67, 0.35);
+}
+
+.brand-social-btn.ig-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(220, 39, 67, 0.6);
+  color: #ffffff !important;
+}
+
+/* WhatsApp con verde oficial característico */
+.brand-social-btn.wa-btn {
+  background: #25D366;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+}
+
+.brand-social-btn.wa-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: #20ba59;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.6);
+  color: #ffffff !important;
+}
+
+.brand-social-btn:active {
+  transform: scale(0.97);
+}
+
+/* Ajustes responsivos para mantener la cuadrícula 2x2 armónica */
+@media (max-width: 768px) {
+  .hero-quick-bar {
+    gap: 0.85rem;
+    margin-top: 2rem;
+  }
+  .quick-info-card {
+    padding: 0.9rem 1rem;
+  }
+  .brand-social-btn {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .hero-quick-bar {
+    gap: 0.75rem;
+  }
+  .quick-info-card {
+    padding: 0.85rem;
+    gap: 0.65rem;
+    border-radius: 14px;
+  }
+  .quick-info-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+  .quick-info-label {
+    font-size: 0.68rem;
+  }
+  .quick-info-val {
+    font-size: 0.84rem;
+  }
+  .quick-social-btns-row {
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .brand-social-btn {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.88rem;
+    min-height: 40px;
+  }
 }
 
 .hero-badge {
