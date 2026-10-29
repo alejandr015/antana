@@ -41,7 +41,7 @@ function CheckoutModal({ isOpen, onClose }) {
           try {
             const profile = JSON.parse(savedProfileStr);
             if (profile.name) setCustomerName(profile.name);
-            if (profile.phone) setCustomerPhone(profile.phone);
+            if (profile.phone) setCustomerPhone(String(profile.phone).replace(/\D/g, '').slice(-10));
             if (profile.address) setAddress(profile.address);
             if (profile.housingDetails) setHousingDetails(profile.housingDetails);
           } catch(e) {}
@@ -68,12 +68,6 @@ function CheckoutModal({ isOpen, onClose }) {
       delivery_fee: deliveryFee,
       total: cartTotal
     };
-
-    try {
-      await saveOrder(orderData);
-    } catch (e) {
-      console.error("No se pudo guardar la orden en Supabase", e);
-    }
 
     const orderText = cartItems.map(item => {
       let line = `✅ ${item.quantity} x ${item.name.toUpperCase()}`;
@@ -111,7 +105,7 @@ function CheckoutModal({ isOpen, onClose }) {
       .replace('{domicilio}', orderType === 'delivery' ? `$${deliveryFee.toLocaleString('es-CO')}` : '$0 (Para Recoger)')
       .replace('{metodo_pago}', paymentMethod)
       .replace('{total}', `$${cartTotal.toLocaleString('es-CO')}`)
-      .replace('{tiempo_espera}', tiempoEsperaMsg ? `*Tiempo estimado:* ${tiempoEsperaMsg}` : '');
+      .replace('{tiempo_espera}', tiempoEsperaMsg ? `*Aviso:* ${tiempoEsperaMsg}` : '');
 
     const url = `https://wa.me/+573204449987?text=${encodeURIComponent(finalMessage)}`;
     window.open(url, '_blank');
@@ -127,9 +121,25 @@ function CheckoutModal({ isOpen, onClose }) {
       localStorage.removeItem('antana_saved_profile');
     }
 
-    clearCart();
-    onClose();
-    setIsCartOpen(false);
+    // Guardar el pedido solo después de abrir WhatsApp y confirmar envío para evitar pedidos fantasma
+    setAlertData({
+      isOpen: true,
+      title: '¿Enviaste tu pedido por WhatsApp?',
+      message: 'Confirma cuando hayas enviado el mensaje en WhatsApp para registrar tu pedido y vaciar el carrito.',
+      onConfirm: async () => {
+        try {
+          await saveOrder(orderData);
+        } catch (e) {
+          console.error("No se pudo guardar la orden en Supabase", e);
+        }
+        setAlertData(prev => ({ ...prev, isOpen: false }));
+        clearCart();
+        onClose();
+        setIsCartOpen(false);
+      },
+      confirmText: 'Sí, ya envié el pedido',
+      cancelText: 'Aún no / Volver'
+    });
   };
 
   const sendToWhatsApp = async () => {
@@ -142,8 +152,12 @@ function CheckoutModal({ isOpen, onClose }) {
       setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, ingresa tu número de celular.", onConfirm: null });
       return;
     }
+    if (!/^\d{10}$/.test(customerPhone)) {
+      setAlertData({ isOpen: true, title: 'Celular inválido', message: "El número de celular debe tener exactamente 10 dígitos, solo números.", onConfirm: null });
+      return;
+    }
 
-    // Si es a domicilio, validamos barrio y dirección obligatoria
+    // Si es a domicilio, validamos barrio, dirección y conjunto/casa obligatorios
     if (orderType === 'delivery') {
       if (!selectedNeighborhood) {
         setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, selecciona tu barrio de la lista para calcular el costo del domicilio antes de hacer el pedido.", onConfirm: null });
@@ -151,6 +165,10 @@ function CheckoutModal({ isOpen, onClose }) {
       }
       if (!address.trim()) {
         setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, escribe tu dirección exacta para poder entregar tu pedido sin inconvenientes.", onConfirm: null });
+        return;
+      }
+      if (!selectedNeighborhood.isRestricted && !housingDetails.trim()) {
+        setAlertData({ isOpen: true, title: 'Datos Incompletos', message: "Por favor, indica el conjunto, edificio, torre y apartamento, o escribe 'Casa' si vives en casa.", onConfirm: null });
         return;
       }
     }
@@ -172,8 +190,17 @@ function CheckoutModal({ isOpen, onClose }) {
         confirmText: 'Aceptar y Continuar',
         cancelText: isAllowed ? 'Volver' : 'Entendido'
       });
+    } else if (settings.normalAlert?.message?.trim()) {
+      // Operación normal: se muestra el mensaje configurado en el panel (ej. el tiempo se informa tras el pago)
+      setAlertData({
+        isOpen: true,
+        title: settings.normalAlert.title || 'Confirmación de Pedido',
+        message: settings.normalAlert.message,
+        onConfirm: () => executeWhatsAppOrder(settings),
+        confirmText: 'Entendido, enviar pedido',
+        cancelText: 'Volver'
+      });
     } else {
-      // Se pasa directo a WhatsApp sin mostrar falsos tiempos previos antes de verificar el pago
       executeWhatsAppOrder(settings);
     }
   };
@@ -300,11 +327,14 @@ function CheckoutModal({ isOpen, onClose }) {
                 </p>
                 <input
                   type="tel"
-                  placeholder="Tu número de contacto"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={10}
+                  placeholder="Ej: 3204449987"
                   value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                   className="search-input"
-                  autoComplete="tel"
+                  autoComplete="tel-national"
                   style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
                 />
               </div>
@@ -419,11 +449,11 @@ function CheckoutModal({ isOpen, onClose }) {
 
                   <div>
                     <p style={{ fontSize: '0.9rem', marginBottom: '0.4rem', color: 'var(--text-secondary)' }}>
-                      Conjunto / Edificio / Casa / Torre / Apto
+                      Conjunto / Edificio / Casa / Torre / Apto <span style={{ color: 'var(--accent-pink)' }}>*</span>
                     </p>
                     <input
                       type="text"
-                      placeholder="Ej: Conjunto Ipanema, Torre 3, Apto 402"
+                      placeholder="Ej: Casa 1 piso / Conjunto Ipanema, Torre 3, Apto 402"
                       value={housingDetails}
                       onChange={(e) => setHousingDetails(e.target.value)}
                       className="search-input"

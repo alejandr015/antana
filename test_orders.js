@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://wgngiijmfnjqqyynuqyd.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndnbmdpaWptZm5qcXF5eW51cXlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2Nzc4MDgsImV4cCI6MjEwMzI1MzgwOH0.3XGigKzLst8e88x9y7CJD8CRiEbW2d00wnOlJzGufXw';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Faltan las variables de entorno VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY. Ejecuta con: node --env-file=.env test_orders.js');
+  process.exit(1);
+}
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function test() {

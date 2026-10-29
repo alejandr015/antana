@@ -12,7 +12,7 @@ Antana es una aplicación web (PWA) de comercio electrónico enfocada en la vent
 ---
 
 ## 2. 🛠️ Arquitectura y Stack Tecnológico
-- **Frontend Core:** React 19, Vite, React Router DOM v7.
+- **Frontend Core:** React 18.3, Vite, React Router DOM v6.
 - **PWA:** Configurado vía `vite-plugin-pwa` para instalación nativa y offline caching.
 - **Performance:** Code Splitting / Lazy Loading (`React.lazy` y `Suspense`) para separar el bundle administrativo del bundle del cliente.
 - **Backend / BaaS:** Supabase (PostgreSQL + Auth + Storage).

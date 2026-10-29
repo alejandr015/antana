@@ -113,7 +113,7 @@ function AdminSettingsTab({ settings, setSettings }) {
                 <span className="admin-status-badge green">Recomendado</span>
               </div>
               <h5>Operación Normal</h5>
-              <p>Sin alertas previas. El cliente selecciona productos y pasa directo a WhatsApp sin interrupciones.</p>
+              <p>Sin bloqueos ni demoras. Se muestra tu mensaje de confirmación (ej. el tiempo se informa tras el pago) y el cliente pasa a WhatsApp.</p>
             </div>
 
             {/* Opción 2: Demoras / Tiempos de espera */}
@@ -185,7 +185,7 @@ function AdminSettingsTab({ settings, setSettings }) {
                   });
                 }}
                 rows="3"
-                placeholder={activeAlertMode === 'delay' ? "Ej: El tiempo estimado de entrega actual es de 45 a 60 minutos." : activeAlertMode === 'closed' ? "Ej: En este momento no contamos con servicio a domicilio. Te esperamos en nuestro local." : "Ej: Tu pedido tardará de 25 a 35 minutos."}
+                placeholder={activeAlertMode === 'delay' ? "Ej: El tiempo estimado de entrega actual es de 45 a 60 minutos." : activeAlertMode === 'closed' ? "Ej: En este momento no contamos con servicio a domicilio. Te esperamos en nuestro local." : "Ej: El tiempo que tardará tu pedido te lo informaremos por WhatsApp una vez se haya realizado el pago."}
                 className="admin-input"
               />
               <span className="admin-tip-text">

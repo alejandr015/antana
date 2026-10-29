@@ -132,6 +132,10 @@ export const getSettings = async (forceRefresh = false) => {
       'Extras - Ingredientes Perros', 'Extras - Ingredientes Salchipapas', 'Extras - Opciones Bebidas'
     ],
     preOrderAlert: { active: false, title: '', message: '', allowContinue: true },
+    normalAlert: {
+      title: 'Confirmación de Pedido',
+      message: 'El tiempo que tardará tu pedido te lo informaremos por WhatsApp una vez se haya realizado el pago.'
+    },
     whatsappTemplate: '',
     categoryLimits: {
       'Hamburguesas': { active: true, limit: 10 },
@@ -209,7 +213,26 @@ export const saveSettings = async (settings) => {
 export const saveOrder = async (orderData) => {
   const { error } = await supabase.from('orders').insert([orderData]);
   if (error) {
+    // Si la tabla en Supabase aún no tiene las columnas order_type o status (código PostgreSQL 42703),
+    // reintentamos con las columnas base para no perder el pedido.
+    if (error.code === '42703') {
+      const { order_type, status, ...fallbackOrderData } = orderData;
+      const { error: retryError } = await supabase.from('orders').insert([fallbackOrderData]);
+      if (retryError) {
+        console.error("Error inserting order (fallback):", retryError);
+        throw retryError;
+      }
+      return;
+    }
     console.error("Error inserting order:", error);
+    throw error;
+  }
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+  const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
+  if (error) {
+    console.error("Error updating order status:", error);
     throw error;
   }
 };

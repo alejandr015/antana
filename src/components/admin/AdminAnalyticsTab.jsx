@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getOrders } from '../../services/db';
-import { TrendingUp, Filter, Award, DollarSign, Package, ChevronDown, Activity } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { getOrders, updateOrderStatus } from '../../services/db';
+import { TrendingUp, Filter, Award, DollarSign, Package, ChevronDown, Activity, Clock } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { toast } from 'sonner';
+
+const ORDER_STATUSES = [
+  { id: 'pendiente', label: 'Pendiente', color: '#E5A900', bg: 'rgba(229, 169, 0, 0.15)' },
+  { id: 'confirmado', label: 'Confirmado', color: '#00D2FF', bg: 'rgba(0, 210, 255, 0.15)' },
+  { id: 'entregado', label: 'Entregado', color: '#22C55E', bg: 'rgba(34, 197, 94, 0.15)' },
+  { id: 'cancelado', label: 'Cancelado', color: '#EF4444', bg: 'rgba(239, 68, 68, 0.15)' }
+];
 
 export default function AdminAnalyticsTab() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [timeFilter, setTimeFilter] = useState('month'); // today, week, month, all
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const categories = ['All', 'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Adicionales'];
@@ -43,14 +52,25 @@ export default function AdminAnalyticsTab() {
     }
   };
 
-  // Stats calculation
+  const handleStatusChange = async (orderId, newStatus) => {
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      toast.success(`Estado actualizado a "${newStatus}"`);
+    } catch (e) {
+      toast.error('Actualizado en vista (ejecuta la migración SQL de la columna status para persistir)');
+    }
+  };
+
+  // Stats calculation (excluye pedidos cancelados de los ingresos)
   const stats = useMemo(() => {
+    const validOrders = orders.filter(o => (o.status || 'pendiente') !== 'cancelado');
     let totalRevenue = 0;
-    let totalOrders = orders.length;
+    let totalOrders = validOrders.length;
     let itemSales = {};
     const chartDataMap = {};
 
-    orders.forEach(order => {
+    validOrders.forEach(order => {
       // Basic Stats
       totalRevenue += order.total || 0;
       
@@ -279,6 +299,101 @@ export default function AdminAnalyticsTab() {
                   </div>
                 </motion.div>
               ))}
+            </div>
+          )}
+        </div>
+
+        {/* HISTORIAL Y ESTADO DE PEDIDOS */}
+        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '16px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', gridColumn: '1 / -1' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)' }}>
+              <Clock color="var(--accent-yellow)" size={20} /> Gestión de Estado de Pedidos
+            </h3>
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+              {[{ id: 'All', label: 'Todos' }, ...ORDER_STATUSES].map(st => (
+                <button
+                  key={st.id}
+                  onClick={() => setStatusFilter(st.id)}
+                  style={{
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: statusFilter === st.id ? 'var(--accent-yellow)' : 'rgba(0,0,0,0.3)',
+                    color: statusFilter === st.id ? 'black' : 'var(--text-secondary)',
+                    fontWeight: statusFilter === st.id ? 'bold' : 'normal',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {st.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>Cargando pedidos...</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-muted)', textAlign: 'left' }}>
+                    <th style={{ padding: '0.75rem' }}>Fecha</th>
+                    <th style={{ padding: '0.75rem' }}>Cliente</th>
+                    <th style={{ padding: '0.75rem' }}>Barrio / Entrega</th>
+                    <th style={{ padding: '0.75rem' }}>Total</th>
+                    <th style={{ padding: '0.75rem' }}>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders
+                    .filter(o => statusFilter === 'All' || (o.status || 'pendiente') === statusFilter)
+                    .slice(0, 20)
+                    .map(order => {
+                      const currentStatus = order.status || 'pendiente';
+                      const statusMeta = ORDER_STATUSES.find(s => s.id === currentStatus) || ORDER_STATUSES[0];
+                      return (
+                        <tr key={order.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                          <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>
+                            {new Date(order.created_at).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}
+                          </td>
+                          <td style={{ padding: '0.75rem' }}>
+                            <div style={{ fontWeight: 'bold' }}>{order.customer_name}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{order.customer_phone}</div>
+                          </td>
+                          <td style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>
+                            {order.neighborhood || 'No especificado'}
+                          </td>
+                          <td style={{ padding: '0.75rem', fontWeight: 'bold', color: 'var(--accent-yellow)' }}>
+                            ${(order.total || 0).toLocaleString('es-CO')}
+                          </td>
+                          <td style={{ padding: '0.75rem' }}>
+                            <select
+                              value={currentStatus}
+                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                              style={{
+                                padding: '0.35rem 0.6rem',
+                                borderRadius: '6px',
+                                border: `1px solid ${statusMeta.color}`,
+                                background: statusMeta.bg,
+                                color: statusMeta.color,
+                                fontWeight: 'bold',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {ORDER_STATUSES.map(st => (
+                                <option key={st.id} value={st.id} style={{ background: '#141414', color: 'white' }}>
+                                  {st.label}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

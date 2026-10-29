@@ -55,12 +55,14 @@ function Footer() {
               >
                 <Instagram size={22} />
               </motion.a>
-              <motion.a href="#" className="social-icon fb" title="Facebook"
-                variants={iconVariants} whileHover="hover" whileTap="tap"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '45px', height: '45px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-                <Facebook size={22} />
-              </motion.a>
+              {branding.facebookUrl && (
+                <motion.a href={branding.facebookUrl} target="_blank" rel="noreferrer" className="social-icon fb" title="Facebook"
+                  variants={iconVariants} whileHover="hover" whileTap="tap"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '45px', height: '45px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  <Facebook size={22} />
+                </motion.a>
+              )}
               <motion.a href="https://wa.me/+573204449987" target="_blank" rel="noreferrer" className="social-icon wa" title="WhatsApp"
                 variants={iconVariants} whileHover="hover" whileTap="tap"
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '45px', height: '45px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}

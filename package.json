@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test tests/unit/orderUtils.test.js",
+    "test:watch": "node --test --watch tests/unit/orderUtils.test.js",
+    "test:e2e": "playwright test",
+    "test:security": "node --env-file=.env tests/security/rls_security_check.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",
