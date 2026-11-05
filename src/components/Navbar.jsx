@@ -97,6 +97,7 @@ function Navbar() {
           <button
             onClick={toggleCart}
             className="cart-icon-btn"
+            aria-label="Abrir carrito de compras"
             style={{
               background: 'transparent',
               border: 'none',

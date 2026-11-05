@@ -5,6 +5,7 @@ import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import CartSidebar from './components/CartSidebar.jsx';
 import LoadingScreen from './components/LoadingScreen.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import { useAuth } from './context/AuthContext.jsx';
 
@@ -120,18 +121,20 @@ function App() {
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <CartSidebar />}
       <div style={{ flex: 1 }}>
-        <Suspense fallback={<LoadingScreen />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingScreen />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/admin" element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </div>
       {!isAdminRoute && <Footer />}
     </CartProvider>

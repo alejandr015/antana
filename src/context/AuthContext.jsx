@@ -20,10 +20,11 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
+      const normalizedEmail = currentUser.email?.toLowerCase().trim();
       const { data, error } = await supabase
         .from('admin_users')
         .select('id')
-        .eq('email', currentUser.email)
+        .eq('email', normalizedEmail)
         .single();
         
       setIsAdmin(!!data && !error);

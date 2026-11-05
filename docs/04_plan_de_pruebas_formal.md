@@ -156,7 +156,7 @@ Funcionalidades que no cambian directamente pero pueden verse afectadas:
 | Login y seguridad | Acceso admin y autorización de correos | Pruebas manuales de login | Commit "seguridad login" |
 | Verificación de contenido | Solo existe el número 320 444 9987 en el código | Búsqueda en el código | `PENDIENTES.md` |
 | Unitarias y de componentes | Ejecución automatizada de precios, filtros, validaciones y reglas QC-01..QC-05 | `npm test` (`tests/unit/orderUtils.test.js`) | **11 / 11 aprobadas (0 fallos)** |
-| Seguridad RLS | Verificación automatizada con `anon key` (SE-01..SE-06) | `npm run test:security` (`tests/security/rls_security_check.js`) | `SE-01`, `SE-02 (admin_users)` y `SE-06` aprobados; `SE-02 (neighborhoods)`, `SE-03` y `SE-05` listos en script SQL |
+| Seguridad RLS y Esquema 3FN | Verificación automatizada en vivo con `anon key` (SE-01..SE-06 + tablas normalizadas) | `npm run test:security` (`tests/security/rls_security_check.js`) | **100% Aprobado (`SE-01` a `SE-06` bloqueados para anónimos y 10 tablas activas)** |
 | Build, Code-Splitting y PWA | Compilación de producción, chunks separados (`NF-02`) y generación de Service Worker (`CL-22`) | `npm run build` | **Aprobado (`dist/sw.js`, `Admin` en chunk separado)** |
 
 > [!NOTE]

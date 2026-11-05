@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { X, ChevronDown, Search as SearchIcon } from 'lucide-react';
 import { useHardwareBack } from '../hooks/useHardwareBack';
 import { useSessionState } from '../hooks/useSessionState';
+import { sanitizeInputText } from '../utils/orderUtils';
 
 function CheckoutModal({ isOpen, onClose }) {
   const { cartItems, subTotal, clearCart, setIsCartOpen } = useCart();
@@ -251,7 +252,7 @@ function CheckoutModal({ isOpen, onClose }) {
             onClick={(e) => e.stopPropagation()} 
             style={{ padding: '2rem', display: 'flex', flexDirection: 'column', maxHeight: '90vh', overflowY: 'auto' }}
           >
-            <button className="product-modal-close-btn" onClick={onClose} style={{ top: '1.5rem', right: '1.5rem' }}>
+            <button className="product-modal-close-btn" onClick={onClose} aria-label="Cerrar ventana de pedido" style={{ top: '1.5rem', right: '1.5rem' }}>
               <X size={20} />
             </button>
 
@@ -312,9 +313,10 @@ function CheckoutModal({ isOpen, onClose }) {
                 </p>
                 <input
                   type="text"
+                  maxLength={80}
                   placeholder="Tu nombre completo"
                   value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  onChange={(e) => setCustomerName(sanitizeInputText(e.target.value, 80))}
                   className="search-input"
                   autoComplete="name"
                   style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
@@ -438,9 +440,10 @@ function CheckoutModal({ isOpen, onClose }) {
                     </p>
                     <input
                       type="text"
+                      maxLength={120}
                       placeholder="Ej: Cra 16 #34a-10"
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)}
+                      onChange={(e) => setAddress(sanitizeInputText(e.target.value, 120))}
                       className="search-input"
                       autoComplete="street-address"
                       style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
@@ -453,9 +456,10 @@ function CheckoutModal({ isOpen, onClose }) {
                     </p>
                     <input
                       type="text"
+                      maxLength={120}
                       placeholder="Ej: Casa 1 piso / Conjunto Ipanema, Torre 3, Apto 402"
                       value={housingDetails}
-                      onChange={(e) => setHousingDetails(e.target.value)}
+                      onChange={(e) => setHousingDetails(sanitizeInputText(e.target.value, 120))}
                       className="search-input"
                       style={{ padding: '0.8rem 1rem', width: '100%', boxSizing: 'border-box' }}
                     />
@@ -528,6 +532,10 @@ function CheckoutModal({ isOpen, onClose }) {
                 </div>
                 <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Recordar mis datos para el próximo pedido</span>
               </div>
+
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '0 0 1rem 0', lineHeight: 1.4 }}>
+                🔒 Tus datos personales se usan únicamente para gestionar y entregar tu pedido (Ley 1581 de 2012 / ISO 27701).
+              </p>
 
               <motion.button
                 onClick={sendToWhatsApp}

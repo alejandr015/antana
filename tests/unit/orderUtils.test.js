@@ -6,6 +6,7 @@ import {
   calculateExtrasTotal,
   calculateItemTotal,
   getCustomizerConfigForCategory,
+  sanitizeInputText,
   sanitizePhoneInput,
   isValidColombianPhone,
   validateCheckoutForm
@@ -115,5 +116,24 @@ describe('2. Pruebas de Integración de Componentes, Seguridad de Código y No F
     const testOrdersCode = fs.readFileSync(path.join(rootDir, 'test_orders.js'), 'utf8');
     assert.equal(testOrdersCode.includes('eyJhbGci'), false);
     assert.equal(testOrdersCode.includes('process.env.VITE_SUPABASE_ANON_KEY'), true);
+  });
+
+  it('ISO/IEC 27002 A.8.28: sanitizeInputText elimina etiquetas HTML/XSS y respeta longitud máxima', () => {
+    const dirty = '<script>alert(1)</script>Juan Pérez\u0000';
+    assert.equal(sanitizeInputText(dirty, 80), 'scriptalert(1)/scriptJuan Pérez');
+    assert.equal(sanitizeInputText('A'.repeat(200), 50).length, 50);
+  });
+
+  it('ISO/IEC 27002 A.8.20 / A.8.26: vercel.json incluye cabeceras de seguridad HTTP (HSTS, X-Frame-Options, nosniff)', () => {
+    const vercelCfg = JSON.parse(fs.readFileSync(path.join(rootDir, 'vercel.json'), 'utf8'));
+    const headerKeys = vercelCfg.headers[0].headers.map(h => h.key);
+    assert.ok(headerKeys.includes('X-Content-Type-Options'));
+    assert.ok(headerKeys.includes('X-Frame-Options'));
+    assert.ok(headerKeys.includes('Strict-Transport-Security'));
+  });
+
+  it('ISO/IEC 25010 Fiabilidad: App.jsx integra ErrorBoundary para tolerancia a fallos', () => {
+    const appCode = fs.readFileSync(path.join(rootDir, 'src/App.jsx'), 'utf8');
+    assert.equal(appCode.includes('ErrorBoundary'), true);
   });
 });

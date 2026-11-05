@@ -55,9 +55,14 @@ function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // Estados para seguridad avanzada
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [lockoutTime, setLockoutTime] = useState(null);
+  // Estados para seguridad avanzada (ISO/IEC 27002 A.8.5: persistente ante recargas F5)
+  const [loginAttempts, setLoginAttempts] = useState(() => {
+    return Number(localStorage.getItem('antana_login_attempts') || 0);
+  });
+  const [lockoutTime, setLockoutTime] = useState(() => {
+    const savedLockout = Number(localStorage.getItem('antana_login_lockout') || 0);
+    return savedLockout > Date.now() ? savedLockout : null;
+  });
   const [showResendEmail, setShowResendEmail] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
@@ -92,6 +97,8 @@ function Login() {
           setLockoutTime(null);
           setLoginAttempts(0);
           setCountdown(0);
+          localStorage.removeItem('antana_login_lockout');
+          localStorage.removeItem('antana_login_attempts');
           clearInterval(interval);
         } else {
           setCountdown(remaining);
@@ -135,12 +142,15 @@ function Login() {
       setLoading(false);
 
       if (authError) {
-        // Incrementar intentos fallidos
+        // Incrementar intentos fallidos (persistido en localStorage)
         const newAttempts = loginAttempts + 1;
         setLoginAttempts(newAttempts);
+        localStorage.setItem('antana_login_attempts', String(newAttempts));
         
         if (newAttempts >= 5) {
-          setLockoutTime(Date.now() + 30000); // Bloquear por 30 segundos tras 5 intentos
+          const until = Date.now() + 30000; // Bloquear por 30 segundos tras 5 intentos
+          setLockoutTime(until);
+          localStorage.setItem('antana_login_lockout', String(until));
           setError('Demasiados intentos fallidos. Por seguridad, tu acceso ha sido bloqueado temporalmente.');
           return;
         }
@@ -155,6 +165,8 @@ function Login() {
         }
       } else {
         setLoginAttempts(0);
+        localStorage.removeItem('antana_login_lockout');
+        localStorage.removeItem('antana_login_attempts');
         toast.success('Sesión iniciada correctamente');
       }
     } else if (mode === 'register') {

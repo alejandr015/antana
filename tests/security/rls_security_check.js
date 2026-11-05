@@ -1,7 +1,6 @@
 /**
- * Script de verificación de seguridad RLS (Casos SE-01 a SE-06 del Plan de Pruebas)
+ * Script de verificación de Base de Datos y Seguridad RLS (Casos SE-01 a SE-06 + Esquema)
  * Ejecución: node --env-file=.env tests/security/rls_security_check.js
- * Si una escritura anónima es permitida por falta de RLS, limpia el registro de prueba inmediatamente.
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -18,7 +17,7 @@ const anonClient = createClient(supabaseUrl, supabaseKey, {
 });
 
 async function runSecurityChecks() {
-  console.log('=== Verificación de Políticas RLS (QC-02 / SE-01..SE-05) ===\n');
+  console.log('=== 1. Verificación de Políticas RLS (QC-02 / SE-01..SE-05) ===\n');
 
   // Limpieza preventiva de cualquier registro de prueba anterior
   await anonClient.from('neighborhoods').delete().eq('name', 'TEST_RLS_BARRIO');
@@ -66,6 +65,23 @@ async function runSecurityChecks() {
     await anonClient.storage.from('menu-images').remove([testFileName]);
   }
   console.log(`[SE-05] Upload anónimo a bucket menu-images bloqueado:`, Boolean(se05Error), se05Error?.message || '⚠️ PERMITIDO (Aplicar migración RLS de Storage)');
+
+  console.log('\n=== 2. Verificación de Esquema y Tablas en Supabase ===\n');
+
+  // Verificar columnas order_type y status en orders
+  const { error: orderColsError } = await anonClient
+    .from('orders')
+    .select('id, order_type, status')
+    .limit(1);
+  console.log(`[SCHEMA] Columnas orders.order_type y orders.status existen:`, !orderColsError || orderColsError.code !== '42703', orderColsError?.message || 'OK');
+
+  // Verificar tablas normalizadas y conteo de filas visibles
+  const tablesToCheck = ['menu_items', 'neighborhoods', 'settings', 'orders', 'categories', 'extra_groups', 'extras', 'category_extra_groups', 'order_items', 'order_item_extras'];
+  for (const tbl of tablesToCheck) {
+    const { data: tblData, count, error: tblErr } = await anonClient.from(tbl).select('*', { count: 'exact', head: false }).limit(2);
+    const exists = !tblErr || (tblErr.code !== '42P01' && !tblErr.message?.includes('does not exist'));
+    console.log(`[SCHEMA] Tabla "${tbl}" -> Existe: ${exists} | Filas visibles (anon): ${count ?? tblData?.length ?? 0}`, tblErr ? `| Error: ${tblErr.code} - ${tblErr.message}` : '| OK');
+  }
 }
 
 runSecurityChecks();

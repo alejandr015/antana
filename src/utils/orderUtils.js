@@ -87,6 +87,18 @@ export const getCustomizerConfigForCategory = (category) => {
 };
 
 /**
+ * Sanitiza texto libre (nombre, dirección, conjunto, notas) eliminando etiquetas HTML/scripts
+ * y caracteres de control, y limitando la longitud máxima.
+ * Cumple con ISO/IEC 27002 Control A.8.28 (Codificación Segura - Prevención XSS/Inyección).
+ */
+export const sanitizeInputText = (value = '', maxLength = 120) => {
+  return String(value)
+    .replace(/[<>]/g, '') // Evita inyección de tags HTML/script
+    .replace(/[\u0000-\u001F\u007F]/g, '') // Elimina caracteres de control invisibles
+    .slice(0, maxLength);
+};
+
+/**
  * Sanitiza un input de celular dejando únicamente dígitos y máximo 10 caracteres (CL-10).
  */
 export const sanitizePhoneInput = (rawValue = '') => {
