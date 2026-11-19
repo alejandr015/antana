@@ -6,6 +6,7 @@ import { useHardwareBack } from '../hooks/useHardwareBack';
 import { getSettings } from '../services/db';
 import AlertModal from './AlertModal';
 import { useBranding } from '../hooks/useBranding';
+import { SAUCE_PREFERENCE_OPTIONS, getRecommendationTitleForCategory, parseRecommendations, buildFinalComment, sanitizeInputText } from '../utils/orderUtils';
 
 function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenuItems, initialStep = 'info', initialQuantity = 1, initialExtras = [], initialComment = '' }) {
   const branding = useBranding();
@@ -13,6 +14,8 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
   const [activeTab, setActiveTab] = useState('ingredientes'); 
   
   const [quantity, setQuantity] = useState(initialQuantity);
+  const [selectedRecommendations, setSelectedRecommendations] = useState([]);
+  const [recommendationsMap, setRecommendationsMap] = useState({});
   const [comment, setComment] = useState(initialComment);
   const [selectedExtras, setSelectedExtras] = useState(initialExtras);
   const [activeProduct, setActiveProduct] = useState(product);
@@ -27,12 +30,17 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
   useHardwareBack(isOpen, onClose, 'productModal');
 
   useEffect(() => {
-    const init = async () => {
+    const loadSettings = async () => {
       const s = await getSettings();
-      if (s && s.categoryLimits) setCategoryLimits(s.categoryLimits);
+      if (s) {
+        if (s.categoryLimits) setCategoryLimits(s.categoryLimits);
+        if (s.productRecommendations) setRecommendationsMap(s.productRecommendations);
+      }
     };
-    init();
-  }, []);
+    loadSettings();
+    window.addEventListener('settingsUpdated', loadSettings);
+    return () => window.removeEventListener('settingsUpdated', loadSettings);
+  }, [isOpen]);
 
   useEffect(() => {
     if (product) setActiveProduct(product);
@@ -92,13 +100,22 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
     }
   }
 
+  const currentRecommendations = currentProduct
+    ? (recommendationsMap[currentProduct.category] ?? (currentProduct.category !== 'Bebidas' ? SAUCE_PREFERENCE_OPTIONS : []))
+    : [];
+
   // Effect to reset state when opened, including setting the correct active tab
   useEffect(() => {
     if (isOpen) {
+      const availableRecs = currentProduct
+        ? (recommendationsMap[currentProduct.category] ?? (currentProduct.category !== 'Bebidas' ? SAUCE_PREFERENCE_OPTIONS : []))
+        : SAUCE_PREFERENCE_OPTIONS;
+      const parsed = parseRecommendations(initialComment, availableRecs);
       setStep(initialStep);
       setActiveTab(tabs[0]?.id || 'ingredientes');
       setQuantity(initialQuantity);
-      setComment(initialComment);
+      setSelectedRecommendations(parsed.selectedRecommendations);
+      setComment(parsed.customComment);
       setSelectedExtras(initialExtras);
       setIsTransforming(false);
     }
@@ -125,6 +142,10 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
   }
 
   const handleToggleExtra = (extra) => {
+    // Si el usuario agrega una salsa en la pestaña + Salsas y tenía marcado "Sin salsas", quitamos "Sin salsas"
+    if (extra.category === 'Extras - Salsas' && selectedRecommendations.includes('Sin salsas')) {
+      setSelectedRecommendations(prev => prev.filter(r => r !== 'Sin salsas'));
+    }
     setSelectedExtras(prev => {
       const exists = prev.find(e => e.id === extra.id);
       if (exists) {
@@ -134,6 +155,24 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
         return prev.filter(e => e.id !== extra.id);
       }
       return [...prev, { ...extra, quantity: 1 }];
+    });
+  };
+
+  const handleToggleRecommendation = (option) => {
+    setSelectedRecommendations(prev => {
+      const isSelected = prev.includes(option);
+      if (isSelected) {
+        return prev.filter(r => r !== option);
+      }
+      let next = [...prev, option];
+      // Mantener exclusividad mutua entre "Sin salsas" y "Salsas aparte"
+      if (option === 'Sin salsas') {
+        next = next.filter(r => r !== 'Salsas aparte');
+        setSelectedExtras(curr => curr.filter(e => e.category !== 'Extras - Salsas'));
+      } else if (option === 'Salsas aparte') {
+        next = next.filter(r => r !== 'Sin salsas');
+      }
+      return next;
     });
   };
 
@@ -202,9 +241,13 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
   const totalPrice = finalPrice * quantity;
 
   const handleAddToCart = () => {
+    const finalComment = buildFinalComment(
+      currentRecommendations.length > 0 ? selectedRecommendations : [],
+      comment
+    );
     toast.success(`${quantity}x ${currentProduct.name} agregado al carrito`);
     onClose();
-    onAddToCart(currentProduct, quantity, selectedExtras, comment);
+    onAddToCart(currentProduct, quantity, selectedExtras, finalComment);
   };
 
   return (
@@ -309,12 +352,14 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
                 </button>
               </div>
 
-              {/* Layout como en el boceto: Imagen izq, Titulo/Desc der */}
-              <div className="customizer-product-summary">
-                <img src={currentProduct.imageUrl} alt={currentProduct.name} className="customizer-small-img" />
-                <div className="customizer-summary-text">
-                  <h2 className="customizer-small-title">{currentProduct.name}</h2>
-                  <p className="customizer-small-desc">{currentProduct.description}</p>
+              {/* Layout como en el boceto: Imagen izq, Titulo/Desc der (con slot fijo para que al desplegarse con el cursor no empuje los botones de abajo) */}
+              <div className="customizer-product-summary-slot">
+                <div className="customizer-product-summary">
+                  <img src={currentProduct.imageUrl} alt={currentProduct.name} className="customizer-small-img" />
+                  <div className="customizer-summary-text">
+                    <h2 className="customizer-small-title">{currentProduct.name}</h2>
+                    <p className="customizer-small-desc">{currentProduct.description}</p>
+                  </div>
                 </div>
               </div>
 
@@ -342,7 +387,7 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
                     const extraData = selectedExtras.find(e => e.id === extra.id);
                     const isSelected = !!extraData;
                     return (
-                      <div key={extra.id} className="customizer-extra-item-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <div key={extra.id} className="customizer-extra-item-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <label 
                           className={`customizer-extra-item ${isSelected ? 'selected' : ''}`}
                           style={{ flex: 1, margin: 0, height: '100%' }}
@@ -378,19 +423,19 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
                               exit={{ width: 0, opacity: 0, scale: 0.8 }}
                               style={{ overflow: 'hidden', flexShrink: 0 }}
                             >
-                              <div className="extra-quantity-counter" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', justifyContent: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.05)', padding: '6px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', minWidth: '40px' }}>
-                                <button 
-                                  onClick={(e) => { e.preventDefault(); handleUpdateExtraQuantity(extra, 1); }}
-                                  style={{ background: 'var(--accent-yellow)', border: 'none', color: 'black', cursor: 'pointer', display: 'flex', justifyContent: 'center', padding: '6px 12px', borderRadius: '6px' }}
-                                >
-                                  <Plus size={16} />
-                                </button>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', lineHeight: '1', textAlign: 'center' }}>{extraData.quantity}</span>
+                              <div className="extra-quantity-counter" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '6px', background: 'rgba(255, 255, 255, 0.05)', padding: '5px 8px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', height: '42px' }}>
                                 <button 
                                   onClick={(e) => { e.preventDefault(); handleUpdateExtraQuantity(extra, -1); }}
-                                  style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', justifyContent: 'center', padding: '6px 12px', borderRadius: '6px' }}
+                                  style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px' }}
                                 >
-                                  <Minus size={16} />
+                                  <Minus size={14} />
+                                </button>
+                                <span style={{ fontSize: '0.98rem', fontWeight: 'bold', lineHeight: '1', minWidth: '18px', textAlign: 'center' }}>{extraData.quantity}</span>
+                                <button 
+                                  onClick={(e) => { e.preventDefault(); handleUpdateExtraQuantity(extra, 1); }}
+                                  style={{ background: 'var(--accent-yellow)', border: 'none', color: 'black', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '6px' }}
+                                >
+                                  <Plus size={14} />
                                 </button>
                               </div>
                             </motion.div>
@@ -402,12 +447,75 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
                 )}
               </div>
 
+              {/* Recomendaciones dinámicas por categoría (Ej. Salsas aparte, Sin salsas, y las que agregue el Admin) */}
+              {currentRecommendations.length > 0 && (
+                <div style={{ marginTop: '0.25rem', marginBottom: '0.45rem' }}>
+                  <p style={{
+                    margin: '0 0 0.35rem 0',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                    color: 'var(--text-secondary)',
+                    letterSpacing: '0.02em'
+                  }}>
+                    {getRecommendationTitleForCategory(currentProduct.category)}
+                  </p>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {currentRecommendations.map(option => {
+                      const isActive = selectedRecommendations.includes(option);
+                      return (
+                        <button
+                          key={option}
+                          type="button"
+                          onClick={() => handleToggleRecommendation(option)}
+                          style={{
+                            flex: '1 1 calc(50% - 6px)',
+                            minWidth: '125px',
+                            padding: '0.45rem 0.7rem',
+                            borderRadius: '10px',
+                            border: isActive ? '1px solid var(--accent-yellow)' : '1px solid rgba(255,255,255,0.12)',
+                            background: isActive ? 'rgba(229, 169, 0, 0.18)' : 'rgba(255,255,255,0.03)',
+                            color: isActive ? 'var(--accent-yellow)' : 'var(--text-secondary)',
+                            fontWeight: isActive ? 'bold' : '500',
+                            fontSize: '0.83rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.4rem',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <span style={{
+                            width: '14px',
+                            height: '14px',
+                            borderRadius: '4px',
+                            border: isActive ? '1px solid var(--accent-yellow)' : '1px solid rgba(255,255,255,0.35)',
+                            background: isActive ? 'var(--accent-yellow)' : 'transparent',
+                            color: 'black',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            flexShrink: 0
+                          }}>
+                            {isActive ? '✓' : ''}
+                          </span>
+                          <span>{option}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Notas */}
               <div className="customizer-notes-section">
                 <textarea 
                   placeholder="Instrucciones especiales (Ej. Sin cebolla)..."
                   value={comment}
-                  onChange={(e) => setComment(e.target.value)}
+                  maxLength={160}
+                  onChange={(e) => setComment(sanitizeInputText(e.target.value, 160))}
                   className="customizer-textarea"
                   rows="1"
                 ></textarea>

@@ -137,6 +137,12 @@ export const getSettings = async (forceRefresh = false) => {
       message: 'El tiempo que tardará tu pedido te lo informaremos por WhatsApp una vez se haya realizado el pago.'
     },
     whatsappTemplate: '',
+    productRecommendations: {
+      'Hamburguesas': ['Salsas aparte', 'Sin salsas'],
+      'Salchipapas': ['Salsas aparte', 'Sin salsas'],
+      'Perros Calientes': ['Salsas aparte', 'Sin salsas'],
+      'Bebidas': []
+    },
     categoryLimits: {
       'Hamburguesas': { active: true, limit: 10 },
       'Salchipapas': { active: true, limit: 5 },
@@ -183,6 +189,10 @@ export const getSettings = async (forceRefresh = false) => {
     ...defaultSettings,
     ...data.config,
     customCategories: mergedCategories,
+    productRecommendations: {
+      ...defaultSettings.productRecommendations,
+      ...(data.config.productRecommendations || {})
+    },
     categoryLimits: {
       ...defaultSettings.categoryLimits,
       ...(data.config.categoryLimits || {})

@@ -99,6 +99,84 @@ export const sanitizeInputText = (value = '', maxLength = 120) => {
 };
 
 /**
+ * Opciones rápidas por defecto de preferencia de salsas para comidas.
+ */
+export const SAUCE_PREFERENCE_OPTIONS = ['Salsas aparte', 'Sin salsas'];
+
+/**
+ * Devuelve el título dinámico según la categoría del producto ("Recomendaciones para tu hamburguesa", etc.).
+ */
+export const getRecommendationTitleForCategory = (category = '') => {
+  const map = {
+    'Hamburguesas': 'Recomendaciones para tu hamburguesa:',
+    'Perros Calientes': 'Recomendaciones para tu perro caliente:',
+    'Salchipapas': 'Recomendaciones para tu salchipapa:',
+    'Bebidas': 'Recomendaciones para tu bebida:',
+    'Postres': 'Recomendaciones para tu postre:',
+    'Adicionales': 'Recomendaciones para tu adicional:'
+  };
+  return map[category] || `Recomendaciones para tu ${category ? category.toLowerCase() : 'pedido'}:`;
+};
+
+/**
+ * Separa las recomendaciones seleccionadas del comentario libre al editar un ítem del carrito.
+ */
+export const parseRecommendations = (fullComment = '', availableOptions = SAUCE_PREFERENCE_OPTIONS) => {
+  const raw = String(fullComment || '').trim();
+  if (!raw) return { selectedRecommendations: [], customComment: '' };
+
+  const optionsSet = new Set([...SAUCE_PREFERENCE_OPTIONS, ...(availableOptions || [])]);
+  if (raw.includes(' | ')) {
+    const [prefixPart, ...restParts] = raw.split(' | ');
+    const candidateTokens = prefixPart.split(',').map(s => s.trim()).filter(Boolean);
+    if (candidateTokens.length > 0 && candidateTokens.every(t => optionsSet.has(t))) {
+      return {
+        selectedRecommendations: candidateTokens,
+        customComment: restParts.join(' | ').trim()
+      };
+    }
+  }
+
+  const singleTokens = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (singleTokens.length > 0 && singleTokens.every(t => optionsSet.has(t))) {
+    return {
+      selectedRecommendations: singleTokens,
+      customComment: ''
+    };
+  }
+
+  return { selectedRecommendations: [], customComment: raw };
+};
+
+/**
+ * Compatibilidad para extraer una sola preferencia de salsas.
+ */
+export const parseSaucePreference = (fullComment = '') => {
+  const { selectedRecommendations, customComment } = parseRecommendations(fullComment, SAUCE_PREFERENCE_OPTIONS);
+  return {
+    saucePreference: selectedRecommendations[0] || '',
+    customComment
+  };
+};
+
+/**
+ * Une las recomendaciones rápidas seleccionadas (array o string) con la nota escrita por el cliente
+ * para que se refleje tanto en el Carrito como en el mensaje de WhatsApp.
+ */
+export const buildFinalComment = (recommendationsInput = '', customComment = '') => {
+  const list = Array.isArray(recommendationsInput)
+    ? recommendationsInput.map(r => sanitizeInputText(r, 60).trim()).filter(Boolean)
+    : [sanitizeInputText(recommendationsInput, 60).trim()].filter(Boolean);
+
+  const cleanRecs = list.join(', ');
+  const cleanText = sanitizeInputText(customComment, 160).trim();
+  if (cleanRecs && cleanText) {
+    return `${cleanRecs} | ${cleanText}`;
+  }
+  return cleanRecs || cleanText || '';
+};
+
+/**
  * Sanitiza un input de celular dejando únicamente dígitos y máximo 10 caracteres (CL-10).
  */
 export const sanitizePhoneInput = (rawValue = '') => {
@@ -113,14 +191,124 @@ export const isValidColombianPhone = (phone = '') => {
 };
 
 /**
+ * Chips de indicación rápida (1 toque) para entregas a domicilio (Opción A: Formulario Ultra-Rápido).
+ */
+export const DELIVERY_QUICK_CHIPS = [
+  'Dejar en portería',
+  'Llamar al llegar',
+  'Casa 1er piso',
+  'Casa 2do piso',
+  'Timbrar'
+];
+
+/**
+ * Activa o desactiva un chip rápido dentro del campo de indicación/referencia de entrega.
+ */
+export const toggleDeliveryQuickChip = (currentText = '', chip = '') => {
+  const cleanChip = sanitizeInputText(chip, 60).trim();
+  if (!cleanChip) return sanitizeInputText(currentText, 120);
+
+  const tokens = String(currentText || '')
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean);
+
+  const exists = tokens.some(t => t.toLowerCase() === cleanChip.toLowerCase());
+  const nextTokens = exists
+    ? tokens.filter(t => t.toLowerCase() !== cleanChip.toLowerCase())
+    : [...tokens, cleanChip];
+
+  return sanitizeInputText(nextTokens.join(', '), 120);
+};
+
+/**
+ * Tipos de ubicación urbana disponibles para entregas a domicilio (compatibilidad).
+ */
+export const LOCATION_TYPES = [
+  { id: 'barrio_casa', label: '🏠 Casa / Barrio', shortLabel: 'Casa en Barrio' },
+  { id: 'conjunto', label: '🏢 Conjunto / Condominio', shortLabel: 'Conjunto Cerrado' },
+  { id: 'edificio', label: '🏙️ Edificio / Unidad Res.', shortLabel: 'Edificio / Unidad Residencial' },
+  { id: 'comercial', label: '🏬 Local / Oficina / Hotel', shortLabel: 'Local / Empresa / Hotel' }
+];
+
+/**
+ * Construye el resumen estructurado de Barrio/Conjunto y Dirección Completa (Opción A Ultra-Rápido).
+ */
+export const formatStructuredDeliveryAddress = ({
+  locationType = 'unificado',
+  neighborhoodName = '',
+  address = '',
+  complexName = '',
+  unitSubType = 'apto',
+  towerOrBlock = '',
+  unitNumber = '',
+  housingDetails = ''
+}) => {
+  const cleanNb = sanitizeInputText(neighborhoodName, 80).trim();
+  const cleanAddr = sanitizeInputText(address, 120).trim();
+  const cleanComplex = sanitizeInputText(complexName, 90).trim();
+  const cleanTower = sanitizeInputText(towerOrBlock, 60).trim();
+  const cleanUnit = sanitizeInputText(unitNumber, 60).trim();
+  const cleanDetails = sanitizeInputText(housingDetails, 120).trim();
+
+  let formattedNeighborhood = cleanNb || 'Por confirmar';
+  let detailsParts = [];
+
+  if (locationType === 'unificado' || (!cleanComplex && !cleanTower && !cleanUnit)) {
+    if (cleanDetails) detailsParts.push(`Indicación: ${cleanDetails}`);
+  } else if (locationType === 'barrio_casa') {
+    formattedNeighborhood = `${cleanNb} (Casa en Barrio)`;
+    if (cleanUnit) detailsParts.push(`Casa/Piso: ${cleanUnit}`);
+    if (cleanDetails) detailsParts.push(`Ref: ${cleanDetails}`);
+  } else if (locationType === 'conjunto') {
+    formattedNeighborhood = `${cleanNb} (Conjunto: ${cleanComplex})`;
+    detailsParts.push(`Conjunto ${cleanComplex}`);
+    if (unitSubType === 'casa') {
+      if (cleanTower) detailsParts.push(`Manzana/Interior: ${cleanTower}`);
+      if (cleanUnit) detailsParts.push(`Casa: ${cleanUnit}`);
+    } else {
+      if (cleanTower) detailsParts.push(`Torre/Bloque: ${cleanTower}`);
+      if (cleanUnit) detailsParts.push(`Apto: ${cleanUnit}`);
+    }
+    if (cleanDetails) detailsParts.push(`Ref: ${cleanDetails}`);
+  } else if (locationType === 'edificio') {
+    formattedNeighborhood = `${cleanNb} (Edificio: ${cleanComplex})`;
+    detailsParts.push(`Edificio/Unidad ${cleanComplex}`);
+    if (cleanTower) detailsParts.push(`Piso/Interior: ${cleanTower}`);
+    if (cleanUnit) detailsParts.push(`Apto: ${cleanUnit}`);
+    if (cleanDetails) detailsParts.push(`Ref: ${cleanDetails}`);
+  } else if (locationType === 'comercial') {
+    formattedNeighborhood = `${cleanNb} (${cleanComplex})`;
+    detailsParts.push(`Lugar: ${cleanComplex}`);
+    if (cleanUnit) detailsParts.push(`Oficina/Local/Hab: ${cleanUnit}`);
+    if (cleanDetails) detailsParts.push(`Ref: ${cleanDetails}`);
+  }
+
+  const fullAddress = detailsParts.length > 0
+    ? `${cleanAddr} | ${detailsParts.join(', ')}`
+    : cleanAddr;
+
+  return {
+    formattedNeighborhood,
+    fullAddress
+  };
+};
+
+/**
  * Valida los datos del formulario de Checkout según el tipo de pedido (CL-11..CL-15).
  */
 export const validateCheckoutForm = ({
   customerName = '',
   customerPhone = '',
   orderType = 'delivery',
+  locationType = 'unificado',
+  neighborhoodName = '',
   selectedNeighborhood = null,
   address = '',
+  complexName = '',
+  unitSubType = 'apto',
+  towerOrBlock = '',
+  unitNumber = '',
   housingDetails = ''
 }) => {
   if (!customerName.trim()) {
@@ -133,14 +321,47 @@ export const validateCheckoutForm = ({
     return { valid: false, error: 'El número de celular debe tener exactamente 10 dígitos, solo números.' };
   }
   if (orderType === 'delivery') {
-    if (!selectedNeighborhood) {
-      return { valid: false, error: 'Por favor, selecciona tu barrio de la lista.' };
+    const effectiveNb = neighborhoodName.trim() || selectedNeighborhood?.name || '';
+    if (!effectiveNb) {
+      return { valid: false, error: 'Por favor, escribe el nombre de tu barrio o conjunto.' };
     }
     if (!address.trim()) {
-      return { valid: false, error: 'Por favor, escribe tu dirección exacta.' };
+      return { valid: false, error: 'Por favor, escribe la dirección exacta o Torre y Apto.' };
     }
-    if (!selectedNeighborhood.isRestricted && !housingDetails.trim()) {
-      return { valid: false, error: 'Por favor, indica el conjunto, edificio, torre y apartamento, o escribe "Casa".' };
+
+    if (locationType === 'conjunto') {
+      if (!complexName.trim()) {
+        return { valid: false, error: 'Por favor, escribe el nombre del conjunto o condominio.' };
+      }
+      if (unitSubType === 'apto' && !towerOrBlock.trim()) {
+        return { valid: false, error: 'Por favor, indica el número o letra de la Torre / Bloque / Interior.' };
+      }
+      if (!unitNumber.trim()) {
+        return {
+          valid: false,
+          error: unitSubType === 'casa'
+            ? 'Por favor, indica el número de la casa dentro del conjunto.'
+            : 'Por favor, indica el número del apartamento.'
+        };
+      }
+    } else if (locationType === 'edificio') {
+      if (!complexName.trim()) {
+        return { valid: false, error: 'Por favor, escribe el nombre del edificio o unidad residencial.' };
+      }
+      if (!unitNumber.trim()) {
+        return { valid: false, error: 'Por favor, indica el número del apartamento.' };
+      }
+    } else if (locationType === 'comercial') {
+      if (!complexName.trim()) {
+        return { valid: false, error: 'Por favor, escribe el nombre del local, empresa, clínica u hotel.' };
+      }
+      if (!unitNumber.trim() && !housingDetails.trim()) {
+        return { valid: false, error: 'Por favor, indica el número de local, oficina, habitación o recepción donde se entrega.' };
+      }
+    } else if (locationType === 'barrio_casa') {
+      if (!housingDetails.trim() && !unitNumber.trim()) {
+        return { valid: false, error: 'Por favor, indica un detalle de la casa o referencia (ej: Casa 1 piso, Piso 2, color de fachada).' };
+      }
     }
   }
   return { valid: true, error: null };

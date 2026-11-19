@@ -7,8 +7,15 @@ import {
   calculateItemTotal,
   getCustomizerConfigForCategory,
   sanitizeInputText,
+  getRecommendationTitleForCategory,
+  parseRecommendations,
+  parseSaucePreference,
+  buildFinalComment,
   sanitizePhoneInput,
   isValidColombianPhone,
+  DELIVERY_QUICK_CHIPS,
+  toggleDeliveryQuickChip,
+  formatStructuredDeliveryAddress,
   validateCheckoutForm
 } from '../../src/utils/orderUtils.js';
 import { normalizeText } from '../../src/utils/stringUtils.js';
@@ -27,6 +34,18 @@ describe('1. Pruebas Unitarias – Precios, Filtros y Validaciones (CL-02..CL-15
 
     const burgerCfg = getCustomizerConfigForCategory('Hamburguesas');
     assert.deepEqual(burgerCfg.tabs.map(t => t.id), ['ingredientes', 'salsas']);
+
+    const perroCfg = getCustomizerConfigForCategory('Perros Calientes');
+    assert.equal(perroCfg.extrasCategories.ingredientes, 'Extras - Ingredientes Perros');
+    assert.equal(perroCfg.extrasCategories.salsas, 'Extras - Salsas');
+
+    const salchipapaCfg = getCustomizerConfigForCategory('Salchipapas');
+    assert.equal(salchipapaCfg.extrasCategories.ingredientes, 'Extras - Ingredientes Salchipapas');
+    assert.equal(salchipapaCfg.extrasCategories.salsas, 'Extras - Salsas');
+
+    const otherCfg = getCustomizerConfigForCategory('Adicionales');
+    assert.equal(otherCfg.extrasCategories.ingredientes, 'Extras - Ingredientes');
+    assert.equal(otherCfg.extrasCategories.salsas, 'Extras - Salsas');
   });
 
   it('CL-06 (QC-03): Calcula correctamente (base + extras) * cantidad', () => {
@@ -52,25 +71,23 @@ describe('1. Pruebas Unitarias – Precios, Filtros y Validaciones (CL-02..CL-15
   });
 
   it('CL-12, CL-13, CL-14, CL-15: Valida campos obligatorios en domicilio y recoger en local', () => {
-    // Domicilio sin conjunto/casa -> falla (CL-13)
-    const missingHousing = validateCheckoutForm({
+    // Domicilio sin dirección -> falla (CL-13)
+    const missingAddress = validateCheckoutForm({
       customerName: 'Juan Pérez',
       customerPhone: '3204449987',
       orderType: 'delivery',
-      selectedNeighborhood: { id: '1', name: 'Centro', price: 5000, isRestricted: false },
-      address: 'Cra 5 #10-20',
-      housingDetails: ''
+      neighborhoodName: 'Conjunto Ipanema',
+      address: ''
     });
-    assert.equal(missingHousing.valid, false);
+    assert.equal(missingAddress.valid, false);
 
-    // Domicilio completo -> aprueba
+    // Domicilio completo (Opción A: solo Barrio/Conjunto + Dirección exacta/Torre y Apto) -> aprueba
     const validDelivery = validateCheckoutForm({
       customerName: 'Juan Pérez',
       customerPhone: '3204449987',
       orderType: 'delivery',
-      selectedNeighborhood: { id: '1', name: 'Centro', price: 5000, isRestricted: false },
-      address: 'Cra 5 #10-20',
-      housingDetails: 'Casa 1 piso'
+      neighborhoodName: 'Conjunto Ipanema',
+      address: 'Cra 16 #34a-10, Torre 3 Apto 402'
     });
     assert.equal(validDelivery.valid, true);
 
@@ -81,6 +98,48 @@ describe('1. Pruebas Unitarias – Precios, Filtros y Validaciones (CL-02..CL-15
       orderType: 'pickup'
     });
     assert.equal(validPickup.valid, true);
+
+    // Ramas de error obligatorias (CL-11, CL-12)
+    assert.equal(validateCheckoutForm({ customerName: '', customerPhone: '3204449987' }).valid, false);
+    assert.equal(validateCheckoutForm({ customerName: 'Juan', customerPhone: '' }).valid, false);
+    assert.equal(validateCheckoutForm({ customerName: 'Juan', customerPhone: '320123' }).valid, false);
+    assert.equal(
+      validateCheckoutForm({
+        customerName: 'Juan',
+        customerPhone: '3204449987',
+        orderType: 'delivery',
+        selectedNeighborhood: null
+      }).valid,
+      false
+    );
+    assert.equal(
+      validateCheckoutForm({
+        customerName: 'Juan',
+        customerPhone: '3204449987',
+        orderType: 'delivery',
+        selectedNeighborhood: { id: '1', name: 'Centro', price: 5000, isRestricted: false },
+        address: ''
+      }).valid,
+      false
+    );
+
+    // Opción A: chips rápidos de indicación y formato unificado de dirección
+    assert.equal(DELIVERY_QUICK_CHIPS.includes('Dejar en portería'), true);
+    const addedOne = toggleDeliveryQuickChip('', 'Dejar en portería');
+    assert.equal(addedOne, 'Dejar en portería');
+    const addedTwo = toggleDeliveryQuickChip(addedOne, 'Llamar al llegar');
+    assert.equal(addedTwo, 'Dejar en portería, Llamar al llegar');
+    const removedOne = toggleDeliveryQuickChip(addedTwo, 'Dejar en portería');
+    assert.equal(removedOne, 'Llamar al llegar');
+
+    const formattedA = formatStructuredDeliveryAddress({
+      locationType: 'unificado',
+      neighborhoodName: 'Conjunto Ipanema',
+      address: 'Cra 16 #34a-10, Torre 3 Apto 402',
+      housingDetails: 'Dejar en portería'
+    });
+    assert.equal(formattedA.formattedNeighborhood, 'Conjunto Ipanema');
+    assert.equal(formattedA.fullAddress, 'Cra 16 #34a-10, Torre 3 Apto 402 | Indicación: Dejar en portería');
   });
 });
 
@@ -135,5 +194,86 @@ describe('2. Pruebas de Integración de Componentes, Seguridad de Código y No F
   it('ISO/IEC 25010 Fiabilidad: App.jsx integra ErrorBoundary para tolerancia a fallos', () => {
     const appCode = fs.readFileSync(path.join(rootDir, 'src/App.jsx'), 'utf8');
     assert.equal(appCode.includes('ErrorBoundary'), true);
+  });
+
+  it('CL-07: Preferencias "Salsas aparte" y "Sin salsas" se combinan y se recuperan correctamente para Carrito y WhatsApp', () => {
+    assert.equal(buildFinalComment('Salsas aparte', ''), 'Salsas aparte');
+    assert.equal(buildFinalComment('Sin salsas', 'Sin cebolla'), 'Sin salsas | Sin cebolla');
+    assert.deepEqual(parseSaucePreference('Salsas aparte | Sin cebolla'), {
+      saucePreference: 'Salsas aparte',
+      customComment: 'Sin cebolla'
+    });
+    assert.deepEqual(parseSaucePreference('Sin salsas'), {
+      saucePreference: 'Sin salsas',
+      customComment: ''
+    });
+
+    // Títulos dinámicos por categoría y múltiples recomendaciones del CRUD Admin
+    assert.equal(getRecommendationTitleForCategory('Hamburguesas'), 'Recomendaciones para tu hamburguesa:');
+    assert.equal(getRecommendationTitleForCategory('Perros Calientes'), 'Recomendaciones para tu perro caliente:');
+    assert.equal(getRecommendationTitleForCategory('Salchipapas'), 'Recomendaciones para tu salchipapa:');
+    assert.equal(getRecommendationTitleForCategory('Bebidas'), 'Recomendaciones para tu bebida:');
+    assert.equal(getRecommendationTitleForCategory('Postres'), 'Recomendaciones para tu postre:');
+    assert.equal(getRecommendationTitleForCategory('Adicionales'), 'Recomendaciones para tu adicional:');
+    assert.equal(getRecommendationTitleForCategory('Combos'), 'Recomendaciones para tu combos:');
+    assert.equal(getRecommendationTitleForCategory(''), 'Recomendaciones para tu pedido:');
+
+    const customRecs = ['Salsas aparte', 'Sin salsas', 'Papas bien crocantes'];
+    const combined = buildFinalComment(['Salsas aparte', 'Papas bien crocantes'], 'Partir a la mitad');
+    assert.equal(combined, 'Salsas aparte, Papas bien crocantes | Partir a la mitad');
+    assert.deepEqual(parseRecommendations(combined, customRecs), {
+      selectedRecommendations: ['Salsas aparte', 'Papas bien crocantes'],
+      customComment: 'Partir a la mitad'
+    });
+    assert.deepEqual(parseRecommendations('Bien asada sin sal', customRecs), {
+      selectedRecommendations: [],
+      customComment: 'Bien asada sin sal'
+    });
+    assert.deepEqual(parseRecommendations('', customRecs), {
+      selectedRecommendations: [],
+      customComment: ''
+    });
+    assert.equal(buildFinalComment([], ''), '');
+  });
+});
+
+describe('3. Verificación de Flujos E2E Cliente, Admin y No Funcionales (CL-01..CL-24, AD-01..AD-18, NF-01..NF-05)', () => {
+  const rootDir = process.cwd();
+
+  it('AD-01..AD-04: App.jsx protege /admin con ProtectedRoute y Login.jsx persiste bloqueo anti-fuerza bruta', () => {
+    const appCode = fs.readFileSync(path.join(rootDir, 'src/App.jsx'), 'utf8');
+    const loginCode = fs.readFileSync(path.join(rootDir, 'src/pages/Login.jsx'), 'utf8');
+    assert.equal(appCode.includes('ProtectedRoute'), true);
+    assert.equal(appCode.includes('<Navigate to="/login" replace />'), true);
+    assert.equal(loginCode.includes('antana_login_lockout'), true);
+  });
+
+  it('AD-12..AD-15: AdminAnalyticsTab y db.js gestionan estados de pedido (pendiente, confirmado, entregado, cancelado)', () => {
+    const analyticsCode = fs.readFileSync(path.join(rootDir, 'src/components/admin/AdminAnalyticsTab.jsx'), 'utf8');
+    const dbCode = fs.readFileSync(path.join(rootDir, 'src/services/db.js'), 'utf8');
+    for (const status of ['pendiente', 'confirmado', 'entregado', 'cancelado']) {
+      assert.equal(analyticsCode.includes(`'${status}'`), true, `Falta estado ${status}`);
+    }
+    assert.equal(analyticsCode.includes('updateOrderStatus'), true);
+    assert.equal(dbCode.includes('export const updateOrderStatus'), true);
+  });
+
+  it('NF-02 & CL-22: El build de producción genera Service Worker PWA y chunk separado para Admin', () => {
+    assert.equal(fs.existsSync(path.join(rootDir, 'dist/sw.js')), true);
+    assert.equal(fs.existsSync(path.join(rootDir, 'dist/manifest.webmanifest')), true);
+    const assetFiles = fs.readdirSync(path.join(rootDir, 'dist/assets'));
+    assert.equal(assetFiles.some(f => f.startsWith('Admin-') && f.endsWith('.js')), true);
+    assert.equal(assetFiles.some(f => f.startsWith('Menu-') && f.endsWith('.js')), true);
+    assert.equal(assetFiles.some(f => f.startsWith('Home-') && f.endsWith('.js')), true);
+  });
+
+  it('NF-03 & NF-04: Accesibilidad (aria-label, role="alert") y estilos responsivos móviles presentes', () => {
+    const navbarCode = fs.readFileSync(path.join(rootDir, 'src/components/Navbar.jsx'), 'utf8');
+    const ebCode = fs.readFileSync(path.join(rootDir, 'src/components/ErrorBoundary.jsx'), 'utf8');
+    const styleCode = fs.readFileSync(path.join(rootDir, 'src/style.css'), 'utf8');
+    assert.equal(navbarCode.includes('aria-label='), true);
+    assert.equal(ebCode.includes('role="alert"'), true);
+    assert.equal(styleCode.includes('@media (max-width: 768px)'), true);
+    assert.equal(styleCode.includes('@media (max-width: 580px)'), true);
   });
 });

@@ -67,6 +67,16 @@ function Menu({ isEmbedded = false }) {
     ? categories.filter(c => c !== 'Todos') 
     : [activeCategory];
 
+  const scrollToMenuTitle = () => {
+    const titleEl = document.getElementById('menu-title-header') || document.getElementById('menu');
+    if (titleEl) {
+      const navbar = document.getElementById('navbar');
+      const navbarHeight = navbar ? navbar.offsetHeight : 76;
+      const targetY = titleEl.getBoundingClientRect().top + window.scrollY - navbarHeight - 12;
+      window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+    }
+  };
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -75,7 +85,7 @@ function Menu({ isEmbedded = false }) {
     <>
       <section id="menu" style={{ paddingTop: isEmbedded ? '40px' : '130px', paddingBottom: '40px' }}>
         <div className="container">
-          <div className="section-header reveal active" style={{ marginBottom: '1rem', marginTop: '0' }}>
+          <div id="menu-title-header" className="section-header reveal active" style={{ marginBottom: '1rem', marginTop: '0', scrollMarginTop: '90px' }}>
             <span className="section-subtitle">Nuestra Carta</span>
             <h2 className="section-title">El Menú Antana</h2>
           </div>
@@ -119,7 +129,7 @@ function Menu({ isEmbedded = false }) {
                   onClick={() => {
                     setActiveCategory(category);
                     setIsSidebarOpen(false);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    scrollToMenuTitle();
                   }}
                   className={`sidebar-category-btn ${activeCategory === category ? 'active' : ''}`}
                 >

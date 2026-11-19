@@ -66,6 +66,7 @@ function Home() {
               <div className="quick-info-details">
                 <span className="quick-info-label">Horario de Atención</span>
                 <span className="quick-info-val">Mar a Dom · 5:20 PM - 10:00 PM</span>
+                <span className="quick-info-extra">Atención continua en punto físico y domicilios en Neiva</span>
               </div>
             </div>
 
@@ -83,6 +84,7 @@ function Home() {
               <div className="quick-info-details">
                 <span className="quick-info-label">Ubicación</span>
                 <span className="quick-info-val">Cra. 5a #21-54, Neiva ↗</span>
+                <span className="quick-info-extra">Haz clic para abrir la ubicación exacta en Google Maps</span>
               </div>
             </a>
 
@@ -94,6 +96,7 @@ function Home() {
               <div className="quick-info-details">
                 <span className="quick-info-label">Pedidos Disponibles</span>
                 <span className="quick-info-val">🛵 Domicilio & 🛍️ Para Recoger</span>
+                <span className="quick-info-extra">Haz clic para ir a la carta y armar tu pedido al instante</span>
               </div>
             </div>
 

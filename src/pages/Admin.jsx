@@ -22,6 +22,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import '../admin.css';
 
 import AdminMenuTab from '../components/admin/AdminMenuTab';
+import AdminRecommendationsTab from '../components/admin/AdminRecommendationsTab';
 import AdminNeighborhoodsTab from '../components/admin/AdminNeighborhoodsTab';
 import AdminSettingsTab from '../components/admin/AdminSettingsTab';
 import AdminLimitsTab from '../components/admin/AdminLimitsTab';
@@ -160,7 +161,7 @@ function Admin() {
             <div className="admin-nav-group">
               <button
                 onClick={() => toggleGroup('catalog')}
-                className={`admin-nav-item ${(activeTab === 'menu_main' || activeTab === 'menu_extras') && isCollapsed ? 'active' : ''}`}
+                className={`admin-nav-item ${(activeTab === 'menu_main' || activeTab === 'menu_extras' || activeTab === 'menu_recommendations') && isCollapsed ? 'active' : ''}`}
                 style={{ justifyContent: isCollapsed ? 'center' : 'space-between' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -185,6 +186,12 @@ function Admin() {
                 >
                   Adicionales
                 </button>
+                <button
+                  onClick={() => { setActiveTab('menu_recommendations'); setIsMobileDrawerOpen(false); }}
+                  className={`admin-subnav-item ${activeTab === 'menu_recommendations' ? 'active' : ''}`}
+                >
+                  Recomendaciones
+                </button>
               </div>
             </div>
 
@@ -196,15 +203,6 @@ function Admin() {
             >
               <TrendingUp size={20} className="admin-nav-icon" />
               {!isCollapsed && <span className="admin-nav-label">Estadísticas de Ventas</span>}
-            </button>
-
-            <button
-              onClick={() => { setActiveTab('neighborhoods'); setIsMobileDrawerOpen(false); }}
-              className={`admin-nav-item ${activeTab === 'neighborhoods' ? 'active' : ''}`}
-              title="Zonas y Tarifas"
-            >
-              <Bike size={20} className="admin-nav-icon" />
-              {!isCollapsed && <span className="admin-nav-label">Zonas y Tarifas</span>}
             </button>
 
             <button
@@ -286,6 +284,15 @@ function Admin() {
                 setItems={setItems} 
                 categories={categories}
                 activeMode={activeTab} // 'menu_main' o 'menu_extras'
+                settings={settings}
+                setSettings={setSettings}
+                onOpenRecommendations={() => setActiveTab('menu_recommendations')}
+              />
+            )}
+
+            {activeTab === 'menu_recommendations' && (
+              <AdminRecommendationsTab
+                categories={categories}
                 settings={settings}
                 setSettings={setSettings}
               />
