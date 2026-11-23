@@ -333,11 +333,18 @@
   font-weight: bold;
 }
 
-/* Grilla de Productos Moderna */
+/* Grilla de Productos Moderna (Misma distribución de 2 columnas en móvil que el menú de compras) */
 .admin-products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 901px) {
+  .admin-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
 }
 
 .admin-product-card {
@@ -1206,7 +1213,97 @@ select.admin-input {
   }
 
   .admin-products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .admin-product-card {
+    border-radius: 12px;
+  }
+
+  .admin-badge-category {
+    top: 6px;
+    left: 6px;
+    padding: 0.18rem 0.45rem;
+    font-size: 0.65rem;
+    border-radius: 5px;
+  }
+
+  .admin-badge-outofstock {
+    top: 6px;
+    right: 6px;
+    padding: 0.18rem 0.45rem;
+    font-size: 0.65rem;
+    border-radius: 5px;
+  }
+
+  .admin-card-content {
+    padding: 0.75rem;
+  }
+
+  .admin-card-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .admin-price-highlight {
+    order: -1;
+    font-size: 0.95rem;
+  }
+
+  .admin-card-title-row h4 {
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+
+  .admin-card-desc {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .admin-card-footer {
+    padding: 0.5rem 0.6rem;
+    gap: 0.3rem;
+  }
+
+  .admin-product-card .admin-stock-toggle-container {
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .admin-product-card .admin-stock-btn {
+    width: 34px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .admin-product-card .admin-stock-indicator {
+    width: 14px;
+    height: 14px;
+  }
+
+  .admin-product-card .admin-stock-indicator.in {
+    left: 18px;
+  }
+
+  .admin-product-card .admin-stock-indicator.out {
+    left: 2px;
+  }
+
+  .admin-product-card .admin-stock-label {
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+
+  .admin-product-card .admin-card-actions {
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+
+  .admin-product-card .admin-icon-btn {
+    padding: 0.25rem;
   }
 
   .admin-neighborhoods-grid {
