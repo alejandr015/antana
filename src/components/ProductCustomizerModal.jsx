@@ -47,8 +47,6 @@ function ProductCustomizerModal({ isOpen, product, onClose, onAddToCart, allMenu
   }, [product]);
 
   const currentProduct = product || activeProduct;
-  
-  console.log("ProductCustomizerModal renderizando. isOpen:", isOpen, "currentProduct:", currentProduct?.name, "step:", step);
 
   // Determine tabs and available categories based on product type
   let tabs = [];

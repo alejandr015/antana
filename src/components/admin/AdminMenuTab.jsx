@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pencil, Trash2, Plus, Search, X, Utensils, Sparkles, Check } from 'lucide-react';
+import { Pencil, Trash2, Plus, Search, X, Utensils, Sparkles } from 'lucide-react';
 import { saveMenuItem, deleteMenuItem, uploadImage, saveSettings, updateCategoryInAllItems } from '../../services/db';
 import { resizeAndCropImage } from '../../utils/imageOptimizer';
 import { toast } from 'sonner';
@@ -7,7 +7,6 @@ import AlertModal from '../AlertModal';
 import AdminProductModal from './AdminProductModal';
 import ImageCropperModal from './ImageCropperModal';
 import { normalizeText } from '../../utils/stringUtils';
-import { getRecommendationTitleForCategory, SAUCE_PREFERENCE_OPTIONS } from '../../utils/orderUtils';
 
 function AdminMenuTab({ items, setItems, categories, activeMode = 'menu_main', settings, setSettings, onOpenRecommendations }) {
   const [editingItem, setEditingItem] = useState(null);
@@ -28,96 +27,9 @@ function AdminMenuTab({ items, setItems, categories, activeMode = 'menu_main', s
   const [editingCategoryName, setEditingCategoryName] = useState('');
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
-  // Modal Gestionar Recomendaciones (Ej. Salsas aparte, Sin salsas, etc.)
-  const [isRecModalOpen, setIsRecModalOpen] = useState(false);
-  const [selectedRecCategory, setSelectedRecCategory] = useState('Hamburguesas');
-  const [newRecText, setNewRecText] = useState('');
-  const [editingRecIndex, setEditingRecIndex] = useState(null);
-  const [editingRecText, setEditingRecText] = useState('');
-
   useEffect(() => {
     setActiveCategory('Todos');
   }, [activeMode]);
-
-  const mainCategories = categories.filter(cat => !cat.startsWith('Extras - '));
-
-  const getCategoryRecommendations = (cat) => {
-    const map = settings?.productRecommendations || {};
-    if (Array.isArray(map[cat])) return map[cat];
-    return cat !== 'Bebidas' ? [...SAUCE_PREFERENCE_OPTIONS] : [];
-  };
-
-  const handleSaveRecommendationsForCategory = async (cat, updatedList, successMsg) => {
-    try {
-      const currentMap = settings?.productRecommendations || {};
-      const updatedSettings = {
-        ...settings,
-        productRecommendations: {
-          ...currentMap,
-          [cat]: updatedList
-        }
-      };
-      await saveSettings(updatedSettings);
-      setSettings(updatedSettings);
-      toast.success(successMsg);
-    } catch (e) {
-      toast.error('Error al guardar recomendaciones');
-    }
-  };
-
-  const handleAddRecommendation = async () => {
-    const clean = newRecText.trim();
-    if (!clean) {
-      toast.error('Escribe una recomendación válida');
-      return;
-    }
-    const currentList = getCategoryRecommendations(selectedRecCategory);
-    if (currentList.some(r => r.toLowerCase() === clean.toLowerCase())) {
-      toast.error('Esa recomendación ya existe en esta categoría');
-      return;
-    }
-    await handleSaveRecommendationsForCategory(
-      selectedRecCategory,
-      [...currentList, clean],
-      'Recomendación agregada'
-    );
-    setNewRecText('');
-  };
-
-  const handleSaveEditRecommendation = async (index) => {
-    const clean = editingRecText.trim();
-    if (!clean) {
-      toast.error('El texto no puede estar vacío');
-      return;
-    }
-    const currentList = getCategoryRecommendations(selectedRecCategory);
-    if (currentList.some((r, idx) => idx !== index && r.toLowerCase() === clean.toLowerCase())) {
-      toast.error('Ya existe otra recomendación con ese nombre');
-      return;
-    }
-    const updatedList = currentList.map((item, idx) => (idx === index ? clean : item));
-    await handleSaveRecommendationsForCategory(
-      selectedRecCategory,
-      updatedList,
-      'Recomendación actualizada'
-    );
-    setEditingRecIndex(null);
-    setEditingRecText('');
-  };
-
-  const handleDeleteRecommendation = async (index) => {
-    const currentList = getCategoryRecommendations(selectedRecCategory);
-    const updatedList = currentList.filter((_, idx) => idx !== index);
-    await handleSaveRecommendationsForCategory(
-      selectedRecCategory,
-      updatedList,
-      'Recomendación eliminada'
-    );
-    if (editingRecIndex === index) {
-      setEditingRecIndex(null);
-      setEditingRecText('');
-    }
-  };
 
   const handleCreateCategory = async () => {
     if (!newCategoryName.trim()) {
@@ -335,12 +247,7 @@ function AdminMenuTab({ items, setItems, categories, activeMode = 'menu_main', s
             onClick={() => {
               if (onOpenRecommendations) {
                 onOpenRecommendations();
-                return;
               }
-              setSelectedRecCategory(mainCategories[0] || 'Hamburguesas');
-              setEditingRecIndex(null);
-              setNewRecText('');
-              setIsRecModalOpen(true);
             }} 
             className="cta-button admin-create-btn"
             style={{ background: 'rgba(229, 169, 0, 0.12)', border: '1px solid var(--accent-yellow)', color: 'var(--accent-yellow)' }}
@@ -777,198 +684,6 @@ function AdminMenuTab({ items, setItems, categories, activeMode = 'menu_main', s
                 </div>
               </div>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* Modal Gestionar Recomendaciones por Categoría (Ej. Salsas aparte, Sin salsas, etc.) */}
-      {isRecModalOpen && (
-        <div className="product-modal-backdrop" onClick={() => setIsRecModalOpen(false)}>
-          <div
-            className="product-modal-card info-modal"
-            onClick={e => e.stopPropagation()}
-            style={{ maxWidth: '540px', width: '95%', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}
-          >
-            <button className="product-modal-close-btn" onClick={() => setIsRecModalOpen(false)}>
-              <X size={20} />
-            </button>
-
-            <h3 style={{ margin: '0 0 0.4rem 0', color: 'var(--accent-yellow)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Sparkles size={20} /> Gestionar Recomendaciones
-            </h3>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.2rem' }}>
-              Crea, edita o elimina las opciones rápidas (como <strong>Salsas aparte</strong> o <strong>Sin salsas</strong>) que aparecen al personalizar cada tipo de producto. A medida que agregues más, se irá abriendo espacio automáticamente en el pedido.
-            </p>
-
-            {/* Selector de Categoría */}
-            <div style={{ marginBottom: '1.2rem' }}>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: '600' }}>
-                Selecciona la categoría del menú:
-              </label>
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                {mainCategories.map(cat => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => {
-                      setSelectedRecCategory(cat);
-                      setEditingRecIndex(null);
-                      setEditingRecText('');
-                    }}
-                    style={{
-                      padding: '0.45rem 0.9rem',
-                      borderRadius: '20px',
-                      border: selectedRecCategory === cat ? '1px solid var(--accent-yellow)' : '1px solid rgba(255,255,255,0.15)',
-                      background: selectedRecCategory === cat ? 'var(--accent-yellow)' : 'rgba(255,255,255,0.05)',
-                      color: selectedRecCategory === cat ? '#000' : '#fff',
-                      fontWeight: selectedRecCategory === cat ? 'bold' : '500',
-                      fontSize: '0.85rem',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Vista previa del título dinámico */}
-            <div style={{
-              background: 'rgba(229, 169, 0, 0.08)',
-              border: '1px solid rgba(229, 169, 0, 0.25)',
-              borderRadius: '10px',
-              padding: '0.75rem 1rem',
-              marginBottom: '1.2rem'
-            }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>
-                Título que verá el cliente en esta categoría:
-              </span>
-              <strong style={{ color: 'var(--accent-yellow)', fontSize: '0.92rem' }}>
-                {getRecommendationTitleForCategory(selectedRecCategory)}
-              </strong>
-            </div>
-
-            {/* Formulario para agregar nueva recomendación */}
-            <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '1.4rem' }}>
-              <input
-                type="text"
-                className="admin-input"
-                placeholder="Nueva recomendación (Ej. Salsas aparte, Sin cebolla...)"
-                value={newRecText}
-                onChange={e => setNewRecText(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddRecommendation();
-                  }
-                }}
-                style={{ flex: 1, margin: 0 }}
-              />
-              <button
-                type="button"
-                onClick={handleAddRecommendation}
-                className="cta-button"
-                style={{ padding: '0 1.1rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexShrink: 0 }}
-              >
-                <Plus size={18} /> Añadir
-              </button>
-            </div>
-
-            {/* Lista de recomendaciones actuales */}
-            <div>
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.6rem' }}>
-                Opciones activas en <strong>{selectedRecCategory}</strong> ({getCategoryRecommendations(selectedRecCategory).length}):
-              </span>
-
-              {getCategoryRecommendations(selectedRecCategory).length === 0 ? (
-                <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', textAlign: 'center', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
-                  No hay recomendaciones configuradas para esta categoría.
-                </p>
-              ) : (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {getCategoryRecommendations(selectedRecCategory).map((rec, idx) => (
-                    <li
-                      key={`${rec}-${idx}`}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '0.6rem',
-                        background: 'rgba(255,255,255,0.05)',
-                        padding: '0.65rem 0.9rem',
-                        borderRadius: '8px',
-                        border: '1px solid var(--glass-border)'
-                      }}
-                    >
-                      {editingRecIndex === idx ? (
-                        <>
-                          <input
-                            type="text"
-                            className="admin-input"
-                            value={editingRecText}
-                            onChange={e => setEditingRecText(e.target.value)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleSaveEditRecommendation(idx);
-                              }
-                            }}
-                            style={{ flex: 1, margin: 0, padding: '0.4rem 0.7rem' }}
-                            autoFocus
-                          />
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button
-                              type="button"
-                              onClick={() => handleSaveEditRecommendation(idx)}
-                              style={{ background: 'var(--accent-yellow)', border: 'none', color: '#000', borderRadius: '6px', padding: '0.35rem 0.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                              title="Guardar"
-                            >
-                              <Check size={16} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingRecIndex(null);
-                                setEditingRecText('');
-                              }}
-                              style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', borderRadius: '6px', padding: '0.35rem 0.6rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                              title="Cancelar"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <span style={{ fontWeight: '500', fontSize: '0.92rem' }}>{rec}</span>
-                          <div style={{ display: 'flex', gap: '0.7rem' }}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingRecIndex(idx);
-                                setEditingRecText(rec);
-                              }}
-                              style={{ background: 'transparent', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                              title="Editar recomendación"
-                            >
-                              <Pencil size={17} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteRecommendation(idx)}
-                              style={{ background: 'transparent', border: 'none', color: 'var(--accent-pink)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                              title="Eliminar recomendación"
-                            >
-                              <Trash2 size={17} />
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
           </div>
         </div>
       )}

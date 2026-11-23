@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { getMenuItems } from '../services/db';
 import { useSessionState } from '../hooks/useSessionState';
+import { calculateExtrasTotal } from '../utils/orderUtils';
 
 const CartContext = createContext();
 
@@ -23,12 +24,7 @@ export const CartProvider = ({ children }) => {
             const dbItem = dbItems.find(i => i.id === cartItem.id);
             // Actualizar precio base con los datos reales. Si está agotado, lo quitamos.
             if (dbItem && !dbItem.isOutofStock) {
-              const extrasTotal = (cartItem.extras || []).reduce((sum, ext) => {
-                if (ext.price === 0 && ext.quantity > 2) {
-                  return sum + (Math.ceil((ext.quantity - 2) / 2) * 1000);
-                }
-                return sum + (ext.price * (ext.quantity || 1));
-              }, 0);
+              const extrasTotal = calculateExtrasTotal(cartItem.extras || []);
               return { ...cartItem, price: dbItem.price + extrasTotal, name: dbItem.name };
             }
             return null; // El producto ya no existe o está agotado
@@ -49,12 +45,7 @@ export const CartProvider = ({ children }) => {
     const cartItemId = Date.now().toString() + Math.random().toString(36).substr(2, 5);
     
     // Calcular el precio total con extras
-    const extrasTotal = extras.reduce((sum, ext) => {
-      if (ext.price === 0 && ext.quantity > 2) {
-        return sum + (Math.ceil((ext.quantity - 2) / 2) * 1000);
-      }
-      return sum + (ext.price * (ext.quantity || 1));
-    }, 0);
+    const extrasTotal = calculateExtrasTotal(extras);
     const finalPrice = item.price + extrasTotal;
 
     setCartItems(prev => [
@@ -70,7 +61,7 @@ export const CartProvider = ({ children }) => {
   const updateCartItemFull = (cartItemId, quantity, extras, comment, basePrice) => {
     setCartItems(prev => prev.map(item => {
       if (item.cartItemId === cartItemId) {
-        const extrasTotal = extras.reduce((sum, ext) => sum + (ext.price * (ext.quantity || 1)), 0);
+        const extrasTotal = calculateExtrasTotal(extras);
         const finalPrice = basePrice + extrasTotal;
         return { ...item, quantity, extras, comment, price: finalPrice };
       }

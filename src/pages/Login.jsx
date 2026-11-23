@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabaseClient';
 import { motion } from 'framer-motion';
@@ -67,7 +67,6 @@ function Login() {
   const [countdown, setCountdown] = useState(0);
 
   const { signInWithPassword, signUp, user, isAdmin, isRecoveringPassword, setIsRecoveringPassword } = useAuth();
-  const navigate = useNavigate();
 
   // Forzar el modo a update_password si venimos de un enlace de recuperación
   useEffect(() => {
@@ -75,12 +74,6 @@ function Login() {
       setMode('update_password');
     }
   }, [isRecoveringPassword]);
-
-  // Si ya está logueado y es admin, redirigir, PERO NO si está recuperando contraseña
-  if (user && isAdmin && !isRecoveringPassword) {
-    navigate('/admin');
-    return null;
-  }
 
   // Hacer scroll automático hacia arriba cuando carga la pantalla
   useEffect(() => {
@@ -107,6 +100,11 @@ function Login() {
       return () => clearInterval(interval);
     }
   }, [lockoutTime]);
+
+  // Si ya está logueado y es admin, redirigir, PERO NO si está recuperando contraseña
+  if (user && isAdmin && !isRecoveringPassword) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const handleResendConfirmation = async () => {
     setLoading(true);

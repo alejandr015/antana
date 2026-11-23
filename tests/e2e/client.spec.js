@@ -23,7 +23,7 @@ test.describe('Flujo E2E Cliente – Antana (CL-01..CL-24, NF-04, NF-05)', () =>
 
   test('Búsqueda de productos en el menú (CL-02)', async ({ page }) => {
     await page.goto('/menu');
-    const searchInput = page.locator('input[placeholder*="Buscar"]').first();
+    const searchInput = page.locator('input.search-input').first();
     await expect(searchInput).toBeVisible();
     await searchInput.fill('hamburguesa');
   });

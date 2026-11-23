@@ -9,7 +9,8 @@ import { useSessionState } from '../hooks/useSessionState';
 import {
   sanitizeInputText,
   formatStructuredDeliveryAddress,
-  validateCheckoutForm
+  validateCheckoutForm,
+  calculateExtrasTotal
 } from '../utils/orderUtils';
 
 function CheckoutModal({ isOpen, onClose }) {
@@ -87,7 +88,8 @@ function CheckoutModal({ isOpen, onClose }) {
         item.extras.forEach(e => {
           const q = e.quantity || 1;
           const extName = q > 1 ? `${q}x ${e.name}` : e.name;
-          line += `\n   + ${extName}${e.price > 0 ? ` ($${(e.price * q).toLocaleString('es-CO')})` : ''}`;
+          const extraCost = calculateExtrasTotal([e]);
+          line += `\n   + ${extName}${extraCost > 0 ? ` ($${extraCost.toLocaleString('es-CO')})` : ''}`;
         });
       }
       if (item.comment) {

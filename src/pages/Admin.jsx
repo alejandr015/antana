@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getMenuItems, getNeighborhoods, getSettings } from '../services/db';
-import { Link, useNavigate } from 'react-router-dom';
+import { getMenuItems, getSettings } from '../services/db';
+import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, 
   Utensils, 
-  Bike, 
   MessageSquare, 
   ChevronLeft, 
   ChevronRight, 
-  Menu as MenuIcon,
   Home as HomeIcon,
   Settings,
   ShieldAlert,
@@ -23,7 +21,6 @@ import '../admin.css';
 
 import AdminMenuTab from '../components/admin/AdminMenuTab';
 import AdminRecommendationsTab from '../components/admin/AdminRecommendationsTab';
-import AdminNeighborhoodsTab from '../components/admin/AdminNeighborhoodsTab';
 import AdminSettingsTab from '../components/admin/AdminSettingsTab';
 import AdminLimitsTab from '../components/admin/AdminLimitsTab';
 import AdminProfileTab from '../components/admin/AdminProfileTab';
@@ -55,7 +52,6 @@ function Admin() {
   const navigate = useNavigate();
   
   const [items, setItems] = useState([]);
-  const [neighborhoods, setNeighborhoods] = useState([]);
   const [settings, setSettings] = useState({ 
     preOrderAlert: { active: false, title: '', message: '', allowContinue: true }, 
     whatsappTemplate: '' 
@@ -64,13 +60,11 @@ function Admin() {
   useEffect(() => {
     const loadData = async () => {
       setIsDataLoading(true);
-      const [fetchedItems, fetchedNbs, fetchedSettings] = await Promise.all([
+      const [fetchedItems, fetchedSettings] = await Promise.all([
         getMenuItems(),
-        getNeighborhoods(),
         getSettings()
       ]);
       setItems(fetchedItems);
-      setNeighborhoods(fetchedNbs);
       if (fetchedSettings) setSettings(fetchedSettings);
       setIsDataLoading(false);
     };
@@ -300,13 +294,6 @@ function Admin() {
             
             {activeTab === 'analytics' && (
               <AdminAnalyticsTab />
-            )}
-
-            {activeTab === 'neighborhoods' && (
-              <AdminNeighborhoodsTab 
-                neighborhoods={neighborhoods}
-                setNeighborhoods={setNeighborhoods}
-              />
             )}
 
             {activeTab === 'settings_alerts' && (

@@ -30,14 +30,12 @@ export function useHardwareBack(isOpen, onBack, modalId) {
       window.history.pushState({ modalId, depth: myDepth }, '');
     }
 
-    const handlePopState = (e) => {
+    const handlePopState = () => {
       const newDepth = window.history.state?.depth || 0;
-      console.log(`useHardwareBack [${modalId}]: handlePopState! myDepth: ${myDepth}, newDepth: ${newDepth}`);
       
       // Si la nueva profundidad es mayor o igual a mi profundidad, significa que yo sigo en la pila
       // (fui yo, o alguien que está por encima de mí). Solo me cierro si la nueva profundidad es MENOR.
       if (newDepth >= myDepth) {
-        console.log(`useHardwareBack [${modalId}]: Sigo siendo el top state o tengo un hijo activo, ignoro el pop.`);
         return;
       }
       

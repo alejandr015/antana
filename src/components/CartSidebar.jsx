@@ -8,6 +8,7 @@ import { Trash2, Edit2 } from 'lucide-react';
 import { getMenuItems, getSettings } from '../services/db';
 import { useHardwareBack } from '../hooks/useHardwareBack';
 import { useSessionState } from '../hooks/useSessionState';
+import { calculateExtrasTotal } from '../utils/orderUtils';
 
 function CartSidebar() {
   const { isCartOpen, setIsCartOpen, cartItems, updateQuantity, removeFromCart, updateCartItemFull, subTotal } = useCart();
@@ -148,9 +149,10 @@ function CartSidebar() {
                             <div style={{ marginTop: '4px', marginBottom: '4px' }}>
                               {item.extras.map(e => {
                                 const q = e.quantity || 1;
+                                const extraCost = calculateExtrasTotal([e]);
                                 return (
                                   <div key={e.id} style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                    + {q > 1 ? `${q}x ` : ''}{e.name} (${(e.price * q).toLocaleString('es-CO')})
+                                    + {q > 1 ? `${q}x ` : ''}{e.name} (${extraCost.toLocaleString('es-CO')})
                                   </div>
                                 );
                               })}
@@ -174,7 +176,6 @@ function CartSidebar() {
                           <div style={{ display: 'flex', gap: '10px' }}>
                             <button
                               onClick={() => {
-                                console.log("Clic en editar. Item:", item);
                                 setEditingItem(item);
                               }}
                               style={{ background: 'transparent', border: 'none', color: 'var(--accent-yellow)', cursor: 'pointer', padding: '6px' }}
@@ -306,7 +307,6 @@ function CartSidebar() {
         isOpen={!!editingItem}
         product={editingItem ? (menuItems.find(p => p.id === editingItem.id) || editingItem) : null}
         onClose={() => {
-          console.log("CartSidebar: onClose de ProductCustomizerModal fue llamado!");
           setEditingItem(null);
         }}
         onAddToCart={(product, qty, extras, comment) => {
