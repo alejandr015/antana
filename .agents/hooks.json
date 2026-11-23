@@ -1,0 +1,12 @@
+{
+  "auto-test-on-stop": {
+    "enabled": true,
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node ./scripts/auto-verify.js",
+        "timeout": 25
+      }
+    ]
+  }
+}

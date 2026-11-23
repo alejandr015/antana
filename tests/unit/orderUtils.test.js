@@ -271,9 +271,13 @@ describe('3. Verificación de Flujos E2E Cliente, Admin y No Funcionales (CL-01.
     const navbarCode = fs.readFileSync(path.join(rootDir, 'src/components/Navbar.jsx'), 'utf8');
     const ebCode = fs.readFileSync(path.join(rootDir, 'src/components/ErrorBoundary.jsx'), 'utf8');
     const styleCode = fs.readFileSync(path.join(rootDir, 'src/style.css'), 'utf8');
+    const adminCssCode = fs.readFileSync(path.join(rootDir, 'src/admin.css'), 'utf8');
+    const cartContextCode = fs.readFileSync(path.join(rootDir, 'src/context/CartContext.jsx'), 'utf8');
     assert.equal(navbarCode.includes('aria-label='), true);
     assert.equal(ebCode.includes('role="alert"'), true);
     assert.equal(styleCode.includes('@media (max-width: 768px)'), true);
     assert.equal(styleCode.includes('@media (max-width: 580px)'), true);
+    assert.equal(adminCssCode.includes('grid-template-columns: repeat(2, 1fr)'), true);
+    assert.equal(cartContextCode.includes('calculateExtrasTotal'), true);
   });
 });
