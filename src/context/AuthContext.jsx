@@ -34,17 +34,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // Check active sessions and sets the user
+    // Check active sessions and sets the user without blocking public routes
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
         await verifyAdminStatus(session.user);
       }
       setSession(session);
       setUser(session?.user ?? null);
-      // Pequeño retraso estético de 1.2s para que se alcance a ver la nueva pantalla de carga
-      setTimeout(() => {
-        setLoading(false);
-      }, 1200);
+      setLoading(false);
+    }).catch(() => {
+      setLoading(false);
     });
 
     // Listen for changes on auth state (sign in, sign out, etc.)
@@ -104,7 +103,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <LoadingScreen /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };

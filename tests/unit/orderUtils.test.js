@@ -18,9 +18,15 @@ import {
   formatStructuredDeliveryAddress,
   validateCheckoutForm
 } from '../../src/utils/orderUtils.js';
-import { normalizeText } from '../../src/utils/stringUtils.js';
+import { normalizeText, formatHighlightedHtml, stripHighlightMarkup } from '../../src/utils/stringUtils.js';
 
 describe('1. Pruebas Unitarias – Precios, Filtros y Validaciones (CL-02..CL-15, QC-03, QC-05)', () => {
+  it('CL-01b: formatHighlightedHtml y stripHighlightMarkup evitan etiquetas crudas (<span...>) y XSS en el título inicial', () => {
+    assert.equal(formatHighlightedHtml('Sabor *Angus* Inigualable'), 'Sabor <span>Angus</span> Inigualable');
+    assert.equal(formatHighlightedHtml('ANT<span>ANA</span>'), 'ANT<span>ANA</span>');
+    assert.equal(formatHighlightedHtml('<script>alert(1)</script> *Burger*'), '&lt;script&gt;alert(1)&lt;/script&gt; <span>Burger</span>');
+    assert.equal(stripHighlightMarkup('Sabor <span>Angus</span> *Inigualable*'), 'Sabor Angus Inigualable');
+  });
   it('CL-02: normalizeText normaliza tildes y mayúsculas para búsqueda', () => {
     assert.equal(normalizeText('  Clásica Súper  '), 'clasica super');
     assert.equal(normalizeText(''), '');

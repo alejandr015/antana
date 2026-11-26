@@ -49,15 +49,23 @@ function Menu({ isEmbedded = false }) {
   const [settings, setSettings] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
     const fetchMenu = async () => {
       setIsLoading(true);
-      const items = await getMenuItems();
-      const stngs = await getSettings();
-      setMenuItems(items);
-      setSettings(stngs);
-      setIsLoading(false);
+      const [items, stngs] = await Promise.all([
+        getMenuItems(),
+        getSettings()
+      ]);
+      if (mounted) {
+        setMenuItems(items);
+        setSettings(stngs);
+        setIsLoading(false);
+      }
     };
     fetchMenu();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const allCats = settings?.customCategories || [];
@@ -77,7 +85,7 @@ function Menu({ isEmbedded = false }) {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && !isEmbedded) {
     return <LoadingScreen />;
   }
 

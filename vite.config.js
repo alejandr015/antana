@@ -23,7 +23,7 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.svg', 'antana-logo-oficial.png', 'hero-burger.webp', 'anim_planet.png'],
       manifest: {
         name: 'Antana Hamburguesería',
         short_name: 'Antana',

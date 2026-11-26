@@ -1,20 +1,15 @@
 import React, { useEffect } from 'react';
 import { useBranding } from '../hooks/useBranding';
+import { formatHighlightedHtml } from '../utils/stringUtils';
 import Menu from './Menu.jsx';
 import { Clock, MapPin, Bike, Instagram, Phone, ArrowDown } from 'lucide-react';
 
 function Home() {
   const branding = useBranding();
   
-  // Función para convertir *palabra* en <span>palabra</span>
-  const renderWithHighlights = (text) => {
-    if (!text) return { __html: '' };
-    // Primero escapamos el HTML para seguridad
-    let safeText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    // Luego convertimos los asteriscos a spans (amarillo)
-    safeText = safeText.replace(/\*(.*?)\*/g, '<span>$1</span>');
-    return { __html: safeText };
-  };
+  const renderWithHighlights = (text) => ({
+    __html: formatHighlightedHtml(text)
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,7 +37,7 @@ function Home() {
     <>
       <header id="hero">
         <div className="hero-image-bg">
-          <img src="/hero-burger.webp" alt="Hamburguesa Gourmet Antana" loading="lazy" decoding="async" />
+          <img src="/hero-burger.webp" alt="Hamburguesa Gourmet Antana" loading="eager" fetchPriority="high" decoding="sync" />
         </div>
         <div className="container hero-content">
           <span className="hero-badge reveal active">Neiva, Huila</span>

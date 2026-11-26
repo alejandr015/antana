@@ -42,7 +42,7 @@ function Navbar() {
       <nav id="navbar" className={scrolled ? 'scrolled' : ''}>
       <div className="container nav-container">
         <Link to="/" className="logo">
-          <img src={branding.logoUrl} alt="Logo" className="nav-logo-img" loading="lazy" decoding="async" />
+          <img src={branding.logoUrl} alt="Logo" width="45" height="45" className="nav-logo-img" loading="eager" fetchPriority="high" decoding="async" />
           <span className="logo-text">ANT<span>ANA</span></span>
         </Link>
         <ul className="nav-links">

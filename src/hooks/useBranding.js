@@ -1,18 +1,31 @@
 import { useState, useEffect } from 'react';
-import { getSettings, saveSettings } from '../services/db';
+import { getSettings } from '../services/db';
+import { normalizeBrandingMarkup, stripHighlightMarkup } from '../utils/stringUtils';
+
+const DEFAULT_BRANDING = {
+  logoUrl: '/antana-logo-oficial.png',
+  title: 'Sabor *Angus* Inigualable',
+  description: 'Una mezcla perfecta entre lo industrial y lo retro. Disfruta de la mejor carne Angus certificada en el corazón de Neiva.'
+};
+
+const sanitizeBranding = (rawBranding) => {
+  if (!rawBranding) return DEFAULT_BRANDING;
+  return {
+    ...DEFAULT_BRANDING,
+    ...rawBranding,
+    title: normalizeBrandingMarkup(rawBranding.title || DEFAULT_BRANDING.title),
+    description: normalizeBrandingMarkup(rawBranding.description || DEFAULT_BRANDING.description)
+  };
+};
 
 export function useBranding() {
-  // Intentar cargar la marca desde la memoria del navegador para evitar el "parpadeo" de carga
+  // Intentar cargar la marca desde la memoria del navegador para evitar parpadeos de carga
   const getInitialBranding = () => {
     try {
       const cached = localStorage.getItem('antana_branding_cache');
-      if (cached) return JSON.parse(cached);
+      if (cached) return sanitizeBranding(JSON.parse(cached));
     } catch (e) { }
-    return {
-      logoUrl: '/antana-logo-oficial.png',
-      title: 'ANT<span>ANA</span>',
-      description: 'Una mezcla perfecta entre lo industrial y lo retro. Disfruta de la mejor carne Angus certificada en el corazón de Neiva.'
-    };
+    return DEFAULT_BRANDING;
   };
 
   const [branding, setBranding] = useState(getInitialBranding);
@@ -21,27 +34,26 @@ export function useBranding() {
     let mounted = true;
     const fetchBranding = async () => {
       try {
-        const settings = await getSettings(true); // Forzar refresh para ignorar el caché
-        
+        const settings = await getSettings();
         if (mounted && settings?.branding) {
-          setBranding(settings.branding);
+          setBranding(sanitizeBranding(settings.branding));
         }
       } catch (error) {
         console.error("Error fetching branding", error);
       }
     };
     fetchBranding();
-    
+
     // Escuchar actualizaciones en tiempo real cuando se guarda en el admin
     const handleSettingsUpdate = (event) => {
       if (mounted && event.detail?.branding) {
-        setBranding(event.detail.branding);
+        setBranding(sanitizeBranding(event.detail.branding));
       }
     };
     window.addEventListener('settingsUpdated', handleSettingsUpdate);
-    
-    return () => { 
-      mounted = false; 
+
+    return () => {
+      mounted = false;
       window.removeEventListener('settingsUpdated', handleSettingsUpdate);
     };
   }, []);
@@ -49,17 +61,13 @@ export function useBranding() {
   // Sincronizar título, favicon y localStorage cada vez que branding cambie
   useEffect(() => {
     if (branding) {
-      // Guardar en caché para evitar parpadeos en futuras recargas
       try {
         localStorage.setItem('antana_branding_cache', JSON.stringify(branding));
       } catch (e) { }
 
-      // Actualizar Título
-      // Remover tags HTML y asteriscos de markdown para el título del navegador
-      const titleText = branding.title.replace(/<[^>]+>/g, '').replace(/\*/g, '');
-      document.title = titleText ? `${titleText} | La Experiencia Angus en Neiva` : 'Antana';
-      
-      // Actualizar Favicon
+      const titleText = stripHighlightMarkup(branding.title);
+      document.title = titleText ? `${titleText} | La Experiencia Angus en Neiva` : 'Antana | La Experiencia Angus en Neiva';
+
       let link = document.getElementById('dynamic-favicon') || document.querySelector("link[rel~='icon']");
       if (!link) {
         link = document.createElement('link');

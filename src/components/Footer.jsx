@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Instagram, Facebook, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,29 @@ import { useBranding } from '../hooks/useBranding';
 
 function Footer() {
   const branding = useBranding();
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const mapContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setShouldLoadMap(true);
+      return;
+    }
+    const node = mapContainerRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldLoadMap(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '300px' }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const cardStyle = {
     background: 'rgba(255, 255, 255, 0.02)',
@@ -87,12 +110,13 @@ function Footer() {
             </h4>
             
             <motion.a
+              ref={mapContainerRef}
               href="https://www.google.com/maps/search/?api=1&query=Antana+Hamburgueseria,+Cra.+5a+%2321-54,+Neiva,+Huila"
               target="_blank"
               rel="noreferrer"
               whileHover={{ scale: 1.02, boxShadow: '0 8px 25px rgba(229,169,0,0.15)' }}
               whileTap={{ scale: 0.98 }}
-              style={{ display: 'block', textDecoration: 'none', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', flex: 1, minHeight: '180px' }}
+              style={{ display: 'block', textDecoration: 'none', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', flex: 1, minHeight: '180px', background: '#111' }}
               title="Abrir en Google Maps"
             >
               {/* Capa invisible para capturar el click sobre el iframe de forma segura */}
@@ -105,16 +129,18 @@ function Footer() {
                   <Navigation size={16} /> Abrir Mapa
                 </motion.div>
               </div>
-              <iframe
-                src="https://maps.google.com/maps?q=Antana%20Hamburgueseria,%20Neiva,%20Huila&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0, pointerEvents: 'none' }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de Antana"
-              ></iframe>
+              {shouldLoadMap && (
+                <iframe
+                  src="https://maps.google.com/maps?q=Antana%20Hamburgueseria,%20Neiva,%20Huila&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, pointerEvents: 'none' }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Ubicación de Antana"
+                ></iframe>
+              )}
             </motion.a>
 
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>

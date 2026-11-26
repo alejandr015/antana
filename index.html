@@ -5,11 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Antana | La Experiencia Angus en Neiva</title>
     <meta name="description" content="Descubre la mejor hamburguesa Angus de Neiva. Ambiente industrial, música retro y el mejor sabor. Ubicados en Sevilla, Neiva-Huila.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;600;700;800&family=Orbitron:wght@700;900&family=Audiowide&display=swap">
     <link id="dynamic-favicon" rel="icon" type="image/png" href="/antana-logo-oficial.png">
-    <link rel="preload" as="image" href="/hero-burger.webp" type="image/webp">
+    <link rel="preload" as="image" href="/anim_planet.png" type="image/png" fetchpriority="high">
+    <link rel="preload" as="image" href="/hero-burger.webp" type="image/webp" fetchpriority="high">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #080808;
+        color: #FFFFFF;
+      }
+      .antana-loading-screen {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #080808;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        overflow: hidden;
+        opacity: 1;
+        transition: opacity 0.28s ease-out;
+      }
+      .antana-loading-screen.antana-loading-exit {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .antana-loading-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50vw;
+        height: 50vw;
+        max-width: 400px;
+        max-height: 400px;
+        background: #E5A900;
+        filter: blur(60px);
+        border-radius: 50%;
+        z-index: 0;
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.2;
+        animation: antanaGlowPulse 2s ease-in-out infinite;
+        will-change: transform, opacity;
+      }
+      .antana-loading-content {
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .antana-loading-planet {
+        width: 160px;
+        height: 160px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 10px rgba(229, 169, 0, 0.6)) brightness(1.2);
+        margin-bottom: -1.5rem;
+        position: relative;
+        z-index: 2;
+        animation: antanaPlanetFloat 2.5s ease-in-out infinite;
+        will-change: transform;
+      }
+      .antana-loading-title {
+        font-family: 'Audiowide', 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: normal;
+        color: #FFFFFF;
+        margin: 0 0 1.2rem 0;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transform: scaleX(1.1);
+      }
+      .antana-loading-title span {
+        color: #E5A900;
+      }
+      .antana-loading-bar-track {
+        width: 150px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+      }
+      .antana-loading-bar-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #E5A900, transparent);
+        border-radius: 4px;
+        animation: antanaBarSlide 1.4s ease-in-out infinite;
+        will-change: transform;
+      }
+      @keyframes antanaGlowPulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.15; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+      }
+      @keyframes antanaPlanetFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+      @keyframes antanaBarSlide {
+        0% { transform: translateX(-120%); }
+        100% { transform: translateX(220%); }
+      }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="antana-loading-screen" role="status" aria-label="Cargando Antana">
+        <div class="antana-loading-glow"></div>
+        <div class="antana-loading-content">
+          <img src="/anim_planet.png" alt="Antana Icon" width="160" height="160" class="antana-loading-planet" fetchpriority="high">
+          <h1 class="antana-loading-title"><span>ANT</span>ANA</h1>
+          <div class="antana-loading-bar-track">
+            <div class="antana-loading-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

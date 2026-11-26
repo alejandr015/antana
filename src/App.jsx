@@ -8,12 +8,30 @@ import LoadingScreen from './components/LoadingScreen.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import { useAuth } from './context/AuthContext.jsx';
+import { getMenuItems, getSettings } from './services/db.js';
 
 // Carga perezosa (Lazy Loading) de las páginas principales
 const Home = lazy(() => import('./pages/Home.jsx'));
 const Admin = lazy(() => import('./pages/Admin.jsx'));
 const Menu = lazy(() => import('./pages/Menu.jsx'));
 const Login = lazy(() => import('./pages/Login.jsx'));
+
+const preloadAndDecodeImage = (src) => {
+  if (!src) return Promise.resolve();
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      if (typeof img.decode === 'function') {
+        img.decode().catch(() => {}).finally(resolve);
+      } else {
+        resolve();
+      }
+    };
+    img.onerror = () => resolve();
+    img.src = src;
+  });
+};
 
 // Ruta Protegida
 const ProtectedRoute = ({ children }) => {
@@ -108,6 +126,62 @@ function App() {
   const { isRecoveringPassword } = useAuth();
   const isAdminRoute = location.pathname.startsWith('/admin') || isRecoveringPassword;
 
+  const [showInitialLoader, setShowInitialLoader] = useState(() => {
+    const path = window.location.pathname;
+    return path === '/' || path === '/menu';
+  });
+  const [isLoaderExiting, setIsLoaderExiting] = useState(false);
+
+  useEffect(() => {
+    if (!showInitialLoader) return;
+    let cancelled = false;
+
+    const prepareInitialPage = async () => {
+      const maxWait = new Promise((resolve) => setTimeout(resolve, 2500));
+
+      const loadWork = (async () => {
+        const isHome = window.location.pathname === '/';
+        const [, settingsData, menuData] = await Promise.all([
+          isHome
+            ? Promise.all([import('./pages/Home.jsx'), import('./pages/Menu.jsx')])
+            : import('./pages/Menu.jsx'),
+          getSettings(),
+          getMenuItems()
+        ]);
+
+        const logoSrc = settingsData?.branding?.logoUrl || '/antana-logo-oficial.png';
+        const firstProductImages = (menuData || [])
+          .filter((item) => !item.category?.startsWith('Extras - ') && item.imageUrl)
+          .slice(0, 4)
+          .map((item) => item.imageUrl);
+
+        const criticalImages = [
+          ...(isHome ? ['/hero-burger.webp'] : []),
+          logoSrc,
+          ...firstProductImages
+        ];
+
+        await Promise.all(criticalImages.map(preloadAndDecodeImage));
+      })();
+
+      await Promise.race([loadWork, maxWait]);
+
+      if (!cancelled) {
+        setIsLoaderExiting(true);
+        setTimeout(() => {
+          if (!cancelled) {
+            setShowInitialLoader(false);
+          }
+        }, 280);
+      }
+    };
+
+    prepareInitialPage();
+    return () => {
+      cancelled = true;
+    };
+  }, [showInitialLoader]);
+
   // Si el usuario está recuperando su contraseña, forzamos a mostrar Login
   // para que pueda ingresar su nueva clave.
   if (isRecoveringPassword && location.pathname !== '/login') {
@@ -116,13 +190,14 @@ function App() {
 
   return (
     <CartProvider>
+      {showInitialLoader && <LoadingScreen isExiting={isLoaderExiting} />}
       <Toaster position="top-right" theme="dark" richColors toastOptions={{ style: { background: 'rgba(8,8,8,0.95)', border: '1px solid var(--accent-yellow)', backdropFilter: 'blur(10px)' } }} />
       <NetworkStatus />
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <CartSidebar />}
       <div style={{ flex: 1 }}>
         <ErrorBoundary>
-          <Suspense fallback={<LoadingScreen />}>
+          <Suspense fallback={showInitialLoader ? null : <LoadingScreen />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/menu" element={<Menu />} />

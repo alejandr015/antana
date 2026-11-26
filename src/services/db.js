@@ -1,37 +1,51 @@
 import { supabase } from './supabaseClient';
 
-// Caché en memoria para evitar peticiones repetitivas
+// Caché en memoria y deduplicación de promesas en vuelo para evitar peticiones repetitivas
 let menuCache = null;
 let menuCacheTimestamp = 0;
+let menuInflight = null;
 let neighborhoodCache = null;
 let neighborhoodCacheTimestamp = 0;
+let neighborhoodInflight = null;
 let settingsCache = null;
 let settingsCacheTimestamp = 0;
+let settingsInflight = null;
 const CACHE_DURATION = 1000 * 60 * 5; // 5 minutos de caché
 
 export const getMenuItems = async (forceRefresh = false) => {
   if (!forceRefresh && menuCache && (Date.now() - menuCacheTimestamp < CACHE_DURATION)) {
     return menuCache;
   }
-
-  const { data, error } = await supabase.from('menu_items').select('*').order('created_at', { ascending: true });
-  if (error) {
-    console.error("Error fetching menu items:", error);
-    return [];
+  if (!forceRefresh && menuInflight) {
+    return menuInflight;
   }
-  const formattedData = data.map(item => ({
-    id: item.id,
-    category: item.category,
-    name: item.name,
-    description: item.description,
-    price: item.price,
-    imageUrl: item.image_url,
-    isOutofStock: item.is_out_of_stock
-  }));
-  
-  menuCache = formattedData;
-  menuCacheTimestamp = Date.now();
-  return formattedData;
+
+  menuInflight = (async () => {
+    try {
+      const { data, error } = await supabase.from('menu_items').select('*').order('created_at', { ascending: true });
+      if (error) {
+        console.error("Error fetching menu items:", error);
+        return menuCache || [];
+      }
+      const formattedData = data.map(item => ({
+        id: item.id,
+        category: item.category,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        imageUrl: item.image_url,
+        isOutofStock: item.is_out_of_stock
+      }));
+
+      menuCache = formattedData;
+      menuCacheTimestamp = Date.now();
+      return formattedData;
+    } finally {
+      menuInflight = null;
+    }
+  })();
+
+  return menuInflight;
 };
 
 export const saveMenuItem = async (item) => {
@@ -75,16 +89,27 @@ export const getNeighborhoods = async (forceRefresh = false) => {
   if (!forceRefresh && neighborhoodCache && (Date.now() - neighborhoodCacheTimestamp < CACHE_DURATION)) {
     return neighborhoodCache;
   }
-
-  const { data, error } = await supabase.from('neighborhoods').select('*').order('created_at', { ascending: true });
-  if (error) {
-    console.error("Error fetching neighborhoods:", error);
-    return [];
+  if (!forceRefresh && neighborhoodInflight) {
+    return neighborhoodInflight;
   }
-  
-  neighborhoodCache = data;
-  neighborhoodCacheTimestamp = Date.now();
-  return data;
+
+  neighborhoodInflight = (async () => {
+    try {
+      const { data, error } = await supabase.from('neighborhoods').select('*').order('created_at', { ascending: true });
+      if (error) {
+        console.error("Error fetching neighborhoods:", error);
+        return neighborhoodCache || [];
+      }
+
+      neighborhoodCache = data;
+      neighborhoodCacheTimestamp = Date.now();
+      return data;
+    } finally {
+      neighborhoodInflight = null;
+    }
+  })();
+
+  return neighborhoodInflight;
 };
 
 export const saveNeighborhood = async (neighborhood) => {
@@ -116,92 +141,98 @@ export const getSettings = async (forceRefresh = false) => {
   if (!forceRefresh && settingsCache && (Date.now() - settingsCacheTimestamp < CACHE_DURATION)) {
     return settingsCache;
   }
-
-  const { data, error } = await supabase.from('settings').select('config').eq('id', 1).single();
-  
-  const defaultSettings = {
-    branding: {
-      logoUrl: '/antana-logo-oficial.png',
-      logoGallery: [], // Almacena hasta 5 logos para festividades
-      title: 'Sabor <span>Angus</span> Inigualable',
-      description: 'Una mezcla perfecta entre lo industrial y lo retro. Disfruta de la mejor carne Angus certificada en el corazón de Neiva.'
-    },
-    customCategories: [
-      'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Postres', 
-      'Adicionales', 'Extras - Salsas', 'Extras - Ingredientes Hamburguesas', 
-      'Extras - Ingredientes Perros', 'Extras - Ingredientes Salchipapas', 'Extras - Opciones Bebidas'
-    ],
-    preOrderAlert: { active: false, title: '', message: '', allowContinue: true },
-    normalAlert: {
-      title: 'Confirmación de Pedido',
-      message: 'El tiempo que tardará tu pedido te lo informaremos por WhatsApp una vez se haya realizado el pago.'
-    },
-    whatsappTemplate: '',
-    productRecommendations: {
-      'Hamburguesas': ['Salsas aparte', 'Sin salsas'],
-      'Salchipapas': ['Salsas aparte', 'Sin salsas'],
-      'Perros Calientes': ['Salsas aparte', 'Sin salsas'],
-      'Bebidas': []
-    },
-    categoryLimits: {
-      'Hamburguesas': { active: true, limit: 10 },
-      'Salchipapas': { active: true, limit: 5 },
-      'Perros Calientes': { active: true, limit: 10 },
-      'Bebidas': { active: true, limit: 20 },
-      'Postres': { active: true, limit: 10 },
-      'Adicionales': { active: true, limit: 10 },
-      'Extras - Salsas': { active: true, limit: 5 },
-      'Extras - Ingredientes Hamburguesas': { active: true, limit: 5 },
-      'Extras - Ingredientes Perros': { active: true, limit: 5 },
-      'Extras - Ingredientes Salchipapas': { active: true, limit: 5 },
-      'Extras - Opciones Bebidas': { active: true, limit: 5 }
-    }
-  };
-
-  if (error) {
-    console.error("Error fetching settings:", error);
-    return defaultSettings;
-  }
-  
-  let mergedCategories = data.config.customCategories || [];
-  
-  // Lista de categorías que siempre deben estar
-  const requiredCats = [
-    'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Postres', 
-    'Adicionales', 'Extras - Salsas', 'Extras - Ingredientes Hamburguesas', 
-    'Extras - Ingredientes Perros', 'Extras - Ingredientes Salchipapas', 'Extras - Opciones Bebidas'
-  ];
-
-  // Identificar cuáles faltan
-  const missingCats = requiredCats.filter(cat => !mergedCategories.includes(cat));
-
-  if (missingCats.length > 0) {
-    // Si falta alguna, la agregamos
-    mergedCategories = [...mergedCategories, ...missingCats];
-    
-    // Auto-guardar la migración en la base de datos para que sea permanente
-    supabase.from('settings').update({ 
-      config: { ...data.config, customCategories: mergedCategories } 
-    }).eq('id', 1).then(() => console.log('Migración de categorías guardada permanentemente.'));
+  if (!forceRefresh && settingsInflight) {
+    return settingsInflight;
   }
 
-  const finalConfig = {
-    ...defaultSettings,
-    ...data.config,
-    customCategories: mergedCategories,
-    productRecommendations: {
-      ...defaultSettings.productRecommendations,
-      ...(data.config.productRecommendations || {})
-    },
-    categoryLimits: {
-      ...defaultSettings.categoryLimits,
-      ...(data.config.categoryLimits || {})
+  settingsInflight = (async () => {
+    try {
+      const { data, error } = await supabase.from('settings').select('config').eq('id', 1).single();
+
+      const defaultSettings = {
+        branding: {
+          logoUrl: '/antana-logo-oficial.png',
+          logoGallery: [], // Almacena hasta 5 logos para festividades
+          title: 'Sabor *Angus* Inigualable',
+          description: 'Una mezcla perfecta entre lo industrial y lo retro. Disfruta de la mejor carne Angus certificada en el corazón de Neiva.'
+        },
+        customCategories: [
+          'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Postres', 
+          'Adicionales', 'Extras - Salsas', 'Extras - Ingredientes Hamburguesas', 
+          'Extras - Ingredientes Perros', 'Extras - Ingredientes Salchipapas', 'Extras - Opciones Bebidas'
+        ],
+        preOrderAlert: { active: false, title: '', message: '', allowContinue: true },
+        normalAlert: {
+          title: 'Confirmación de Pedido',
+          message: 'El tiempo que tardará tu pedido te lo informaremos por WhatsApp una vez se haya realizado el pago.'
+        },
+        whatsappTemplate: '',
+        productRecommendations: {
+          'Hamburguesas': ['Salsas aparte', 'Sin salsas'],
+          'Salchipapas': ['Salsas aparte', 'Sin salsas'],
+          'Perros Calientes': ['Salsas aparte', 'Sin salsas'],
+          'Bebidas': []
+        },
+        categoryLimits: {
+          'Hamburguesas': { active: true, limit: 10 },
+          'Salchipapas': { active: true, limit: 5 },
+          'Perros Calientes': { active: true, limit: 10 },
+          'Bebidas': { active: true, limit: 20 },
+          'Postres': { active: true, limit: 10 },
+          'Adicionales': { active: true, limit: 10 },
+          'Extras - Salsas': { active: true, limit: 5 },
+          'Extras - Ingredientes Hamburguesas': { active: true, limit: 5 },
+          'Extras - Ingredientes Perros': { active: true, limit: 5 },
+          'Extras - Ingredientes Salchipapas': { active: true, limit: 5 },
+          'Extras - Opciones Bebidas': { active: true, limit: 5 }
+        }
+      };
+
+      if (error) {
+        console.error("Error fetching settings:", error);
+        return settingsCache || defaultSettings;
+      }
+
+      let mergedCategories = data.config.customCategories || [];
+
+      const requiredCats = [
+        'Hamburguesas', 'Salchipapas', 'Perros Calientes', 'Bebidas', 'Postres', 
+        'Adicionales', 'Extras - Salsas', 'Extras - Ingredientes Hamburguesas', 
+        'Extras - Ingredientes Perros', 'Extras - Ingredientes Salchipapas', 'Extras - Opciones Bebidas'
+      ];
+
+      const missingCats = requiredCats.filter(cat => !mergedCategories.includes(cat));
+
+      if (missingCats.length > 0) {
+        mergedCategories = [...mergedCategories, ...missingCats];
+        supabase.from('settings').update({ 
+          config: { ...data.config, customCategories: mergedCategories } 
+        }).eq('id', 1);
+      }
+
+      const finalConfig = {
+        ...defaultSettings,
+        ...data.config,
+        customCategories: mergedCategories,
+        productRecommendations: {
+          ...defaultSettings.productRecommendations,
+          ...(data.config.productRecommendations || {})
+        },
+        categoryLimits: {
+          ...defaultSettings.categoryLimits,
+          ...(data.config.categoryLimits || {})
+        }
+      };
+
+      settingsCache = finalConfig;
+      settingsCacheTimestamp = Date.now();
+      return finalConfig;
+    } finally {
+      settingsInflight = null;
     }
-  };
-  
-  settingsCache = finalConfig;
-  settingsCacheTimestamp = Date.now();
-  return finalConfig;
+  })();
+
+  return settingsInflight;
 };
 
 export const saveSettings = async (settings) => {

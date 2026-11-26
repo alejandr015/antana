@@ -9,8 +9,8 @@ function AdminProfileTab({ settings, setSettings }) {
   const fileInputRef = useRef(null);
 
   const branding = settings.branding || {
-    logoUrl: '/logo.webp',
-    title: 'Sabor <span>Angus</span> Inigualable',
+    logoUrl: '/antana-logo-oficial.png',
+    title: 'Sabor *Angus* Inigualable',
     description: 'Una mezcla perfecta entre lo industrial y lo retro. Disfruta de la mejor carne Angus certificada en el corazón de Neiva.'
   };
 
